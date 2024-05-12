@@ -8,6 +8,7 @@ public class Player {
 	private int defense;
 	private int mana;
 	private int agility; // quanto maior a agilidade, maior a chance de acertar o ataque
+	private int speed;
 	private boolean dead;
 	
 	public Player(String playerClass) {
@@ -80,6 +81,18 @@ public class Player {
 	public void setDead(boolean dead) {
 		
 		this.dead = dead;
+	}
+
+
+	public int getSpeed() {
+		
+		return speed;
+	}
+
+
+	public void setSpeed(int speed) {
+		
+		this.speed = speed;
 	}
 	
 	

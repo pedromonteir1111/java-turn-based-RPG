@@ -28,25 +28,6 @@ public class Enemies {
 		this.enemyHealth = enemyHealth;
 	}
 
-	public int getEnemyAttack() {
-		
-		return enemyAttack;
-	}
-
-	public void setEnemyAttack(int enemyAttack) {
-		
-		this.enemyAttack = enemyAttack;
-	}
-
-	public int getEnemeyDefense() {
-		
-		return enemeyDefense;
-	}
-
-	public void setEnemeyDefense(int enemeyDefense) {
-		
-		this.enemeyDefense = enemeyDefense;
-	}
 
 	public int getEnemyDamage() {
 		

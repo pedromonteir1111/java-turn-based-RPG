@@ -1,52 +1,61 @@
 package game;
 
-import javax.swing.JPanel;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
-public class GamePanel extends JPanel implements Runnable{
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+
+import playerClasses.Player;
+import userInputs.InputsFromKeyboard;
+
+public class GamePanel extends JPanel {
 	
-	final int width = 320;
-	final int height = 180;
-	final int scale = 3;
+	private int deltaX;
+	private int deltaY;
+	private InputsFromKeyboard inputsFromKeyboard;
+	private BufferedImage image;
+	private BufferedImage tempBackground;
 	
-	final int screenWidth = width * scale;
-	final int screenHeight = height * scale;
 	
-	Thread gameThread;
-	
-	public GamePanel() {
+	public GamePanel(Player playerClass) {
 		
-		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		this.setBackground(Color.black);
-		this.setDoubleBuffered(true);
+		importImage();
+		
+		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass);
+		this.addKeyListener(inputsFromKeyboard);
+	
 	}
 	
-	public void startGameThread() {
+	
+	private void importImage() {
 		
-		gameThread = new Thread(this);
-		gameThread.start();
+		InputStream is = getClass().getResourceAsStream("/knightFront.png");
+		InputStream is2 = getClass().getResourceAsStream("/woodfloor.png");
 		
-	}
-
-	public void run() {
-		
-		while (gameThread != null) {
-			
-			System.out.println("Jogo rodando!");
-			updateInfoOnScreen(); // recebe o comando do player e passa para a screen
-			repaint(); // chamando o método 'paintComponent'
-			
+		try {
+			image = ImageIO.read(is);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-	}
-	
-	public void updateInfoOnScreen() {
+		
+		try {
+			tempBackground = ImageIO.read(is2);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 	}
-	
+
+
 	public void paintComponent(Graphics g) {
 		
 		super.paintComponent(g);
@@ -55,11 +64,25 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		g2D.setColor(Color.green);
 		
-		g2D.fillRect(100, 100, 48, 48);
+		g2D.drawImage(image, 100 + deltaX, 100 + deltaY, 48, 48, null);
+		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
 		
 		g2D.dispose();
 	}
 	
 	
+	public void changeDeltaX(int speed) {
+		
+		this.deltaX += speed;
+		repaint();
+	}
 	
-}
+	public void changeDeltaY(int speed) {
+		
+		this.deltaY += speed;
+		repaint();
+	}
+	
+	}	
+	
+
