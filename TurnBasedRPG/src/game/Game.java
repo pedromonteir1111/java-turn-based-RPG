@@ -4,14 +4,13 @@ import java.awt.Color;
 
 import playerClasses.Player;
 import playerClasses.Warrior;
-import userInputs.InputsFromKeyboard;
 
 public class Game {
 	
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Player player;
-	private InputsFromKeyboard inputsFromKeyboard = new InputsFromKeyboard(gamePanel, player);
+//	private InputsFromKeyboard inputsFromKeyboard = new InputsFromKeyboard(gamePanel, player);
 	
 	public Game() {
 		

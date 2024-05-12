@@ -3,6 +3,8 @@ package playerClasses;
 public class Player {
 	
 	private String playerClass;
+	private int playerX;
+	private int playerY;
 	private int health;
 	private int attack;
 	private int defense;
@@ -93,6 +95,30 @@ public class Player {
 	public void setSpeed(int speed) {
 		
 		this.speed = speed;
+	}
+
+
+	public int getPlayerX() {
+		
+		return playerX;
+	}
+
+
+	public void setPlayerX(int playerX) {
+		
+		this.playerX = playerX;
+	}
+
+
+	public int getPlayerY() {
+		
+		return playerY;
+	}
+
+
+	public void setPlayerY(int playerY) {
+		
+		this.playerY = playerY;
 	}
 	
 	

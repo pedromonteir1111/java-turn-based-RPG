@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -15,14 +14,18 @@ import userInputs.InputsFromKeyboard;
 
 public class GamePanel extends JPanel {
 	
+	private Player playerClass;
 	private int deltaX;
 	private int deltaY;
 	private InputsFromKeyboard inputsFromKeyboard;
-	private BufferedImage image;
-	private BufferedImage tempBackground;
+	private BufferedImage[] playerPositionImage;
+	private BufferedImage currentPlayerPosition;
+//	private BufferedImage tempBackground;
 	
 	
 	public GamePanel(Player playerClass) {
+		
+		this.playerClass = playerClass;
 		
 		importImage();
 		
@@ -34,24 +37,20 @@ public class GamePanel extends JPanel {
 	
 	private void importImage() {
 		
-		InputStream is = getClass().getResourceAsStream("/knightFront.png");
-		InputStream is2 = getClass().getResourceAsStream("/woodfloor.png");
+		playerPositionImage = new BufferedImage[4];
 		
 		try {
-			image = ImageIO.read(is);
+			this.playerPositionImage[0] = ImageIO.read(getClass().getResourceAsStream("/knightFront.png"));
+			this.playerPositionImage[1] = ImageIO.read(getClass().getResourceAsStream("/knightLeft.png"));
+			this.playerPositionImage[2] = ImageIO.read(getClass().getResourceAsStream("/knightBack.png"));
+			this.playerPositionImage[3] = ImageIO.read(getClass().getResourceAsStream("/knightRight.png"));
+			
+			currentPlayerPosition = this.playerPositionImage[0];
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
-		try {
-			tempBackground = ImageIO.read(is2);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		}	
 		
 	}
 
@@ -64,8 +63,8 @@ public class GamePanel extends JPanel {
 		
 		g2D.setColor(Color.green);
 		
-		g2D.drawImage(image, 100 + deltaX, 100 + deltaY, 48, 48, null);
-		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
+		g2D.drawImage(currentPlayerPosition, playerClass.getPlayerX() + deltaX, playerClass.getPlayerY() + deltaY, 48, 48, null);
+//		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
 		
 		g2D.dispose();
 	}
@@ -82,7 +81,31 @@ public class GamePanel extends JPanel {
 		this.deltaY += speed;
 		repaint();
 	}
-	
-	}	
-	
 
+
+	public BufferedImage getCurrentPlayerPosition() {
+		
+		return currentPlayerPosition;
+	}
+
+
+	public void setCurrentPlayerPosition(BufferedImage currentPlayerPosition) {
+		
+		this.currentPlayerPosition = currentPlayerPosition;
+	}
+
+	
+	public BufferedImage[] getPlayerPositionImage() {
+		
+		return playerPositionImage;
+	}
+	
+	
+	public void setPlayerPositionImage(BufferedImage[] playerPositionImage) {
+		
+		this.playerPositionImage = playerPositionImage;
+	}
+	
+}
+	
+	
