@@ -1,24 +1,29 @@
 package game;
 
-import javax.swing.JFrame;
+import java.awt.Color;
+
+import playerClasses.Player;
+import playerClasses.Warrior;
 
 public class Game {
-
-	public static void main(String[] args) {
+	
+	private GameWindow gameWindow;
+	private GamePanel gamePanel;
+	private Player player;
+//	private InputsFromKeyboard inputsFromKeyboard = new InputsFromKeyboard(gamePanel, player);
+	
+	public Game() {
 		
-		JFrame window = new JFrame();
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(false);
-		window.setTitle("strategy turn based RPG");
+		player = new Warrior();
+		gamePanel = new GamePanel(player);
+		gameWindow = new GameWindow(gamePanel);
 		
-		GamePanel gamePanel = new GamePanel();
-		window.add(gamePanel);
+		gamePanel.setBackground(Color.black);
+		gamePanel.setFocusable(true);
+		gamePanel.requestFocus();
 		
-		window.pack();
 		
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
 		
-		gamePanel.startGameThread();
 	}
+	
 }

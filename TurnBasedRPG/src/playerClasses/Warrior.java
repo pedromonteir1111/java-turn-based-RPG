@@ -16,6 +16,10 @@ public class Warrior extends Player {
 //			setDefense();
 			setMana(0);
 			setAgility(30);
+			setSpeed(15);
+			
+			setPlayerX(50);
+			setPlayerY(50);
 			
 		
 	}	

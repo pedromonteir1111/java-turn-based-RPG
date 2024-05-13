@@ -1,52 +1,60 @@
 package game;
 
-import javax.swing.JPanel;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-public class GamePanel extends JPanel implements Runnable{
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+
+import playerClasses.Player;
+import userInputs.InputsFromKeyboard;
+
+public class GamePanel extends JPanel {
 	
-	final int width = 320;
-	final int height = 180;
-	final int scale = 3;
+	private Player playerClass;
+	private int deltaX;
+	private int deltaY;
+	private InputsFromKeyboard inputsFromKeyboard;
+	private BufferedImage[] playerPositionImage;
+	private BufferedImage currentPlayerPosition;
+//	private BufferedImage tempBackground;
 	
-	final int screenWidth = width * scale;
-	final int screenHeight = height * scale;
 	
-	Thread gameThread;
-	
-	public GamePanel() {
+	public GamePanel(Player playerClass) {
 		
-		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-		this.setBackground(Color.black);
-		this.setDoubleBuffered(true);
+		this.playerClass = playerClass;
+		
+		importImage();
+		
+		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass);
+		this.addKeyListener(inputsFromKeyboard);
+	
 	}
 	
-	public void startGameThread() {
+	
+	private void importImage() {
 		
-		gameThread = new Thread(this);
-		gameThread.start();
+		playerPositionImage = new BufferedImage[4];
+		
+		try {
+			this.playerPositionImage[0] = ImageIO.read(getClass().getResourceAsStream("/knightFront.png"));
+			this.playerPositionImage[1] = ImageIO.read(getClass().getResourceAsStream("/knightLeft.png"));
+			this.playerPositionImage[2] = ImageIO.read(getClass().getResourceAsStream("/knightBack.png"));
+			this.playerPositionImage[3] = ImageIO.read(getClass().getResourceAsStream("/knightRight.png"));
+			
+			currentPlayerPosition = this.playerPositionImage[0];
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 		
 	}
 
-	public void run() {
-		
-		while (gameThread != null) {
-			
-			System.out.println("Jogo rodando!");
-			updateInfoOnScreen(); // recebe o comando do player e passa para a screen
-			repaint(); // chamando o método 'paintComponent'
-			
-		}
-		
-	}
-	
-	public void updateInfoOnScreen() {
-		
-	}
-	
+
 	public void paintComponent(Graphics g) {
 		
 		super.paintComponent(g);
@@ -55,11 +63,49 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		g2D.setColor(Color.green);
 		
-		g2D.fillRect(100, 100, 48, 48);
+		g2D.drawImage(currentPlayerPosition, playerClass.getPlayerX() + deltaX, playerClass.getPlayerY() + deltaY, 48, 48, null);
+//		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
 		
 		g2D.dispose();
 	}
 	
 	
+	public void changeDeltaX(int speed) {
+		
+		this.deltaX += speed;
+		repaint();
+	}
+	
+	public void changeDeltaY(int speed) {
+		
+		this.deltaY += speed;
+		repaint();
+	}
+
+
+	public BufferedImage getCurrentPlayerPosition() {
+		
+		return currentPlayerPosition;
+	}
+
+
+	public void setCurrentPlayerPosition(BufferedImage currentPlayerPosition) {
+		
+		this.currentPlayerPosition = currentPlayerPosition;
+	}
+
+	
+	public BufferedImage[] getPlayerPositionImage() {
+		
+		return playerPositionImage;
+	}
+	
+	
+	public void setPlayerPositionImage(BufferedImage[] playerPositionImage) {
+		
+		this.playerPositionImage = playerPositionImage;
+	}
 	
 }
+	
+	

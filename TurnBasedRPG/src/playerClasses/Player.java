@@ -3,11 +3,14 @@ package playerClasses;
 public class Player {
 	
 	private String playerClass;
+	private int playerX;
+	private int playerY;
 	private int health;
 	private int attack;
 	private int defense;
 	private int mana;
 	private int agility; // quanto maior a agilidade, maior a chance de acertar o ataque
+	private int speed;
 	private boolean dead;
 	
 	public Player(String playerClass) {
@@ -80,6 +83,42 @@ public class Player {
 	public void setDead(boolean dead) {
 		
 		this.dead = dead;
+	}
+
+
+	public int getSpeed() {
+		
+		return speed;
+	}
+
+
+	public void setSpeed(int speed) {
+		
+		this.speed = speed;
+	}
+
+
+	public int getPlayerX() {
+		
+		return playerX;
+	}
+
+
+	public void setPlayerX(int playerX) {
+		
+		this.playerX = playerX;
+	}
+
+
+	public int getPlayerY() {
+		
+		return playerY;
+	}
+
+
+	public void setPlayerY(int playerY) {
+		
+		this.playerY = playerY;
 	}
 	
 	
