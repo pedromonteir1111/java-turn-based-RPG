@@ -6,21 +6,13 @@ import javax.swing.JFrame;
 
 public class GameWindow {
 	
-	private JFrame jframe;
+	private JFrame jframe;	
 	
-	final int width = 320;
-	final int height = 180;
-	final int scale = 3;
-	
-	final int screenWidth = width * scale;
-	final int screenHeight = height * scale;
-	
-	
-	public GameWindow(GamePanel gamePanel) {
+	public GameWindow(GamePanel gamePanel, ScreenSettings settings) {
 		
 		jframe = new JFrame();
 		
-		jframe.setPreferredSize(new Dimension(screenWidth, screenHeight));
+		jframe.setPreferredSize(new Dimension(settings.getScreenWidth(), settings.getScreenHeight()));
 		jframe.pack();
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jframe.add(gamePanel);
