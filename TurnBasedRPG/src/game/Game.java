@@ -7,6 +7,7 @@ import playerClasses.Warrior;
 
 public class Game {
 	
+	private ScreenSettings screenSettings;
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Player player;
@@ -14,9 +15,10 @@ public class Game {
 	
 	public Game() {
 		
+		screenSettings = new ScreenSettings(5);
 		player = new Warrior();
-		gamePanel = new GamePanel(player);
-		gameWindow = new GameWindow(gamePanel);
+		gamePanel = new GamePanel(player, screenSettings);
+		gameWindow = new GameWindow(gamePanel, screenSettings);
 		
 		gamePanel.setBackground(Color.black);
 		gamePanel.setFocusable(true);

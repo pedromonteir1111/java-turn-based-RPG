@@ -9,23 +9,29 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import map.MapGenerator;
 import playerClasses.Player;
 import userInputs.InputsFromKeyboard;
 
 public class GamePanel extends JPanel {
 	
 	private Player playerClass;
+	private ScreenSettings screenSettings;
+	
 	private int deltaX;
 	private int deltaY;
 	private InputsFromKeyboard inputsFromKeyboard;
 	private BufferedImage[] playerPositionImage;
 	private BufferedImage currentPlayerPosition;
+	
+	private MapGenerator mapGenerator = new MapGenerator(this);
 //	private BufferedImage tempBackground;
 	
 	
-	public GamePanel(Player playerClass) {
+	public GamePanel(Player playerClass, ScreenSettings screenSettings) {
 		
 		this.playerClass = playerClass;
+		this.screenSettings = screenSettings; 
 		
 		importImage();
 		
@@ -63,7 +69,8 @@ public class GamePanel extends JPanel {
 		
 		g2D.setColor(Color.green);
 		
-		g2D.drawImage(currentPlayerPosition, playerClass.getPlayerX() + deltaX, playerClass.getPlayerY() + deltaY, 48, 48, null);
+		mapGenerator.draw(g2D, screenSettings);
+		g2D.drawImage(currentPlayerPosition, playerClass.getPlayerX() + deltaX, playerClass.getPlayerY() + deltaY, screenSettings.getTileSize(), screenSettings.getTileSize(), null);
 //		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
 		
 		g2D.dispose();
