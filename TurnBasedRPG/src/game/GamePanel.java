@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import combat.BattleGrid;
 import map.MapGenerator;
 import playerClasses.Player;
 import userInputs.InputsFromKeyboard;
@@ -17,6 +18,7 @@ public class GamePanel extends JPanel {
 	
 	private Player playerClass;
 	private ScreenSettings screenSettings;
+	private BattleGrid battleGrid;
 	
 	private int deltaX;
 	private int deltaY;
@@ -24,17 +26,19 @@ public class GamePanel extends JPanel {
 	private BufferedImage[] playerPositionImage;
 	private BufferedImage currentPlayerPosition;
 	
-	private MapGenerator mapGenerator = new MapGenerator(this);
+	private MapGenerator mapGenerator;
 //	private BufferedImage tempBackground;
 	
 	
-	public GamePanel(Player playerClass, ScreenSettings screenSettings) {
+	public GamePanel(Player playerClass, ScreenSettings screenSettings, BattleGrid battleGrid) {
 		
 		this.playerClass = playerClass;
 		this.screenSettings = screenSettings; 
+		this.battleGrid = battleGrid;
 		
 		importImage();
 		
+		mapGenerator = new MapGenerator(this, screenSettings);
 		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass);
 		this.addKeyListener(inputsFromKeyboard);
 	
@@ -46,10 +50,10 @@ public class GamePanel extends JPanel {
 		playerPositionImage = new BufferedImage[4];
 		
 		try {
-			this.playerPositionImage[0] = ImageIO.read(getClass().getResourceAsStream("/knightFront.png"));
-			this.playerPositionImage[1] = ImageIO.read(getClass().getResourceAsStream("/knightLeft.png"));
-			this.playerPositionImage[2] = ImageIO.read(getClass().getResourceAsStream("/knightBack.png"));
-			this.playerPositionImage[3] = ImageIO.read(getClass().getResourceAsStream("/knightRight.png"));
+			this.playerPositionImage[0] = ImageIO.read(getClass().getResourceAsStream("/knight/knightFront.png"));
+			this.playerPositionImage[1] = ImageIO.read(getClass().getResourceAsStream("/knight/knightLeft.png"));
+			this.playerPositionImage[2] = ImageIO.read(getClass().getResourceAsStream("/knight/knightBack.png"));
+			this.playerPositionImage[3] = ImageIO.read(getClass().getResourceAsStream("/knight/knightRight.png"));
 			
 			currentPlayerPosition = this.playerPositionImage[0];
 			
@@ -69,7 +73,11 @@ public class GamePanel extends JPanel {
 		
 		g2D.setColor(Color.green);
 		
-		mapGenerator.draw(g2D, screenSettings);
+		mapGenerator.draw(g2D);
+		if (playerClass.isInCombat()) {
+			battleGrid.draw(g2D);
+		}
+		
 		g2D.drawImage(currentPlayerPosition, playerClass.getPlayerX() + deltaX, playerClass.getPlayerY() + deltaY, screenSettings.getTileSize(), screenSettings.getTileSize(), null);
 //		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
 		

@@ -12,10 +12,12 @@ public class Player {
 	private int agility; // quanto maior a agilidade, maior a chance de acertar o ataque
 	private int speed;
 	private boolean dead;
+	private boolean inCombat;
 	
 	public Player(String playerClass) {
 		
 		this.playerClass = playerClass;
+		inCombat = true;
 		
 	}
 	
@@ -121,5 +123,12 @@ public class Player {
 		this.playerY = playerY;
 	}
 	
+	public boolean isInCombat() {
+		return inCombat;
+	}
+	
+	public void setInCombat(boolean inCombat) {
+		this.inCombat = inCombat;
+	}
 	
 }

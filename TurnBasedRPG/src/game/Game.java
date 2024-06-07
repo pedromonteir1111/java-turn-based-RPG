@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Color;
 
+import combat.BattleGrid;
 import playerClasses.Player;
 import playerClasses.Warrior;
 
@@ -11,13 +12,15 @@ public class Game {
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	private Player player;
+	private BattleGrid battleGrid;
 //	private InputsFromKeyboard inputsFromKeyboard = new InputsFromKeyboard(gamePanel, player);
 	
 	public Game() {
 		
-		screenSettings = new ScreenSettings(5);
+		screenSettings = new ScreenSettings(4);
 		player = new Warrior();
-		gamePanel = new GamePanel(player, screenSettings);
+		battleGrid = new BattleGrid(screenSettings);
+		gamePanel = new GamePanel(player, screenSettings, battleGrid);
 		gameWindow = new GameWindow(gamePanel, screenSettings);
 		
 		gamePanel.setBackground(Color.black);
