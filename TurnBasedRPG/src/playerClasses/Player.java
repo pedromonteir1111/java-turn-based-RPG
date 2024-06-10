@@ -11,6 +11,8 @@ public class Player {
 	private int mana;
 	private int agility; // quanto maior a agilidade, maior a chance de acertar o ataque
 	private int speed;
+	private boolean moving;
+	private int direction;
 	private boolean dead;
 	
 	public Player(String playerClass) {
@@ -119,6 +121,26 @@ public class Player {
 	public void setPlayerY(int playerY) {
 		
 		this.playerY = playerY;
+	}
+
+
+	public boolean isMoving() {
+		return moving;
+	}
+
+
+	public void setMoving(boolean moving) {
+		this.moving = moving;
+	}
+
+
+	public int getDirection() {
+		return direction;
+	}
+
+
+	public void setDirection(int direction) {
+		this.direction = direction;
 	}
 	
 	

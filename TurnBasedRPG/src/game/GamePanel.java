@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import map.MapGenerator;
 import playerClasses.Player;
@@ -17,9 +18,16 @@ public class GamePanel extends JPanel {
 	
 	private Player playerClass;
 	private ScreenSettings screenSettings;
+	private Timer animationTimer;
 	
 	private int deltaX;
 	private int deltaY;
+	private int currentIdleFrame;
+	private int idleAnimationTick;
+	private final int IDLE_TICK_RATE = 10;
+	private int frames = 0;
+	private long lastCheck = 0;
+	
 	private InputsFromKeyboard inputsFromKeyboard;
 	private BufferedImage[] playerPositionImage;
 	private BufferedImage currentPlayerPosition;
@@ -37,9 +45,12 @@ public class GamePanel extends JPanel {
 		
 		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass);
 		this.addKeyListener(inputsFromKeyboard);
+		
+		animationTimer = new Timer(100, e -> updateAnimations()); // as animações são atualizadas a cada 100ms
+		animationTimer.start();
+		
 	
 	}
-	
 	
 	private void importImage() {
 		
@@ -59,6 +70,33 @@ public class GamePanel extends JPanel {
 		}	
 		
 	}
+	
+	public void updateAnimations() {
+		
+		if (!playerClass.isMoving()) {
+			
+			idleAnimationTick++;
+			
+			if (idleAnimationTick >= IDLE_TICK_RATE) {
+				
+				currentIdleFrame = (currentIdleFrame + 1) % 4; // os frames são atualizados dentro do limite do array playerPositionImage, que tem as 4 direções p/ representar o player
+				currentPlayerPosition = playerPositionImage[currentIdleFrame];
+				
+				idleAnimationTick = 0; // resetar o contador de ticks p/ a próxima checagem
+			}
+			
+			repaint();
+		}
+		
+		else {
+			
+			idleAnimationTick = 0; // se o jogador está movendo, não há ticks de espera p/ serem contados
+			currentIdleFrame = playerClass.getDirection(); // o frame atual se torna aquele que tem a exata mesma direção do movimento
+			currentPlayerPosition = playerPositionImage[currentIdleFrame];
+		}
+			
+		
+	}
 
 
 	public void paintComponent(Graphics g) {
@@ -74,6 +112,18 @@ public class GamePanel extends JPanel {
 //		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
 		
 		g2D.dispose();
+		
+		frames++;
+		
+		if (System.currentTimeMillis() - lastCheck >= 1000) {
+			
+			lastCheck = System.currentTimeMillis();
+			System.out.println("FPS = "+frames);
+			
+			frames = 0;
+		}
+		
+		
 	}
 	
 	
