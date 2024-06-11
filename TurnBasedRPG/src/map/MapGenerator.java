@@ -86,7 +86,7 @@ public class MapGenerator {
 			y += tileSize;
 		}
 		
-		System.out.println(screenSettings.getScreenWidth()/tileSize);
-		System.out.println(screenSettings.getScreenWidth()/tileSize);
+//		System.out.println(screenSettings.getScreenWidth()/tileSize);
+//		System.out.println(screenSettings.getScreenWidth()/tileSize);
 	}
 }

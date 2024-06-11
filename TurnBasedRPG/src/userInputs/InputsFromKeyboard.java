@@ -9,7 +9,7 @@ import playerClasses.Player;
 public class InputsFromKeyboard implements KeyListener {
 	
 	private GamePanel gamePanel;
-	private Player playerClass; // vai ''armazenar" qual classe o jogador escolheu (ver polimorfismo depois)
+	private Player playerClass; 
 	
 	
 	public InputsFromKeyboard(GamePanel gamePanel, Player playerClass) {
@@ -56,6 +56,10 @@ public class InputsFromKeyboard implements KeyListener {
 		
 		}
 		
+//		case KeyEvent.VK_ENTER:
+//			
+//			gamePanel.startGame();
+//			break;		
 	}
 
 	@Override

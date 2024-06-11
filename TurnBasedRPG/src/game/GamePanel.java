@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import combat.BattleGrid;
+import gamestates.Gamestate;
 import map.MapGenerator;
 import playerClasses.Player;
 import userInputs.InputsFromKeyboard;
@@ -27,8 +28,6 @@ public class GamePanel extends JPanel {
 	private BufferedImage currentPlayerPosition;
 	
 	private MapGenerator mapGenerator;
-//	private BufferedImage tempBackground;
-	
 	
 	public GamePanel(Player playerClass, ScreenSettings screenSettings, BattleGrid battleGrid) {
 		
@@ -64,14 +63,11 @@ public class GamePanel extends JPanel {
 		
 	}
 
-
 	public void paintComponent(Graphics g) {
 		
 		super.paintComponent(g);
 		
 		Graphics2D g2D = (Graphics2D)g; // convertendo os gráficos p/ 2D propriamente
-		
-		g2D.setColor(Color.green);
 		
 		mapGenerator.draw(g2D);
 		if (playerClass.isInCombat()) {
@@ -79,7 +75,6 @@ public class GamePanel extends JPanel {
 		}
 		
 		g2D.drawImage(currentPlayerPosition, playerClass.getPlayerX() + deltaX, playerClass.getPlayerY() + deltaY, screenSettings.getTileSize(), screenSettings.getTileSize(), null);
-//		g2D.drawImage(tempBackground, 0, 0, 48, 48, null);
 		
 		g2D.dispose();
 	}
