@@ -2,20 +2,25 @@ package userInputs;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import combat.CombatSystem;
 import game.GamePanel;
+import gamestates.Gamestate;
 import playerClasses.Player;
 
 
 public class InputsFromKeyboard implements KeyListener {
 	
 	private GamePanel gamePanel;
-	private Player playerClass; // vai ''armazenar" qual classe o jogador escolheu (ver polimorfismo depois)
+	private Player playerClass;
+	CombatSystem combat;
 	
 	
-	public InputsFromKeyboard(GamePanel gamePanel, Player playerClass) {
+	public InputsFromKeyboard(GamePanel gamePanel, Player playerClass, CombatSystem combat) {
 		
 		this.gamePanel = gamePanel;
 		this.playerClass = playerClass;
+		this.combat = combat;
 		
 	}
 
@@ -27,47 +32,77 @@ public class InputsFromKeyboard implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		
-		playerClass.setMoving(true);
 			
 		switch(e.getKeyCode()) {	
 		
 		case KeyEvent.VK_W:
 			
-			gamePanel.changeDeltaY(-playerClass.getSpeed());
-			playerClass.setDirection(2); // de costas
-			gamePanel.setCurrentPlayerPosition(gamePanel.getPlayerPositionImage()[2]);
+			if (Gamestate.state != Gamestate.COMBAT) {
+				playerClass.changeDeltaY(-playerClass.getSpeed());
+				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[2]);
+				gamePanel.repaint();
+				gamePanel.revalidate();
+			}
 			break;
 		
 		case KeyEvent.VK_A:
 			
-			gamePanel.changeDeltaX(-playerClass.getSpeed());
-			playerClass.setDirection(1); // virado p/ esquerda
-			gamePanel.setCurrentPlayerPosition(gamePanel.getPlayerPositionImage()[1]);
+			if (Gamestate.state != Gamestate.COMBAT) {
+				playerClass.changeDeltaX(-playerClass.getSpeed());
+				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[1]);
+				gamePanel.repaint();
+				gamePanel.revalidate();
+			}
 			break;
 			
 		case KeyEvent.VK_S:
 			
-			gamePanel.changeDeltaY(playerClass.getSpeed());
-			playerClass.setDirection(0); // de frente
-			gamePanel.setCurrentPlayerPosition(gamePanel.getPlayerPositionImage()[0]);
+			if (Gamestate.state != Gamestate.COMBAT) {
+				playerClass.changeDeltaY(playerClass.getSpeed());
+				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[0]);
+				gamePanel.repaint();
+				gamePanel.revalidate();
+			}
 			break;	
 			
 		case KeyEvent.VK_D:
 			
-			gamePanel.changeDeltaX(playerClass.getSpeed());
-			playerClass.setDirection(3); // virado p/ direita
-			gamePanel.setCurrentPlayerPosition(gamePanel.getPlayerPositionImage()[3]);
+			if (Gamestate.state != Gamestate.COMBAT) {
+				playerClass.changeDeltaX(playerClass.getSpeed());
+				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[3]);
+				gamePanel.repaint();
+				gamePanel.revalidate();
+			}
 			break;
+			
+		case KeyEvent.VK_O:
+			
+			Gamestate.state = Gamestate.COMBAT;
+			combat.runCombat(0, 0, false);
+			gamePanel.repaint();
+			gamePanel.revalidate();
+			break;
+			
+		case KeyEvent.VK_P:
+			
+			Gamestate.state = Gamestate.PLAYING;
+			gamePanel.repaint();
+			gamePanel.revalidate();
+			break;	
 		
 		}
 		
+		
+		
+//		case KeyEvent.VK_ENTER:
+//			
+//			gamePanel.startGame();
+//			break;		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
-		playerClass.setMoving(false);
+		// TODO Auto-generated method stub
 		
 	}
 	

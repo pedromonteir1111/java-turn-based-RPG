@@ -14,16 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>enemies</name>
-			<type>2</type>
-			<location>C:/Users/jeang/git/java-turn-based-RPG/TurnBasedRPG/src/enemies</location>
-		</link>
-		<link>
-			<name>playerClasses</name>
-			<type>2</type>
-			<location>C:/Users/jeang/git/java-turn-based-RPG/TurnBasedRPG/src/playerClasses</location>
-		</link>
-	</linkedResources>
 </projectDescription>

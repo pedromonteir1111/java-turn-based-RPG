@@ -1,12 +1,12 @@
 package enemies;
 
-public class Enemies {
+public class Enemy {
 	
 	private String enemyType;
 	private int enemyHealth;
 	private int enemyDamage;
 	
-	public Enemies(String enemyType) {
+	public Enemy(String enemyType) {
 		
 		this.enemyType = enemyType;
 		

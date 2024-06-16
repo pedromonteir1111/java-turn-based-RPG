@@ -1,24 +1,95 @@
 package playerClasses;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import game.ScreenSettings;
+
 public class Player {
 	
+	private ScreenSettings screenSettings;
 	private String playerClass;
 	private int playerX;
 	private int playerY;
+	private int squareX;
+	private int squareY;
+	private BufferedImage[] playerPositionImage;
+	private BufferedImage currentPlayerPosition;
+	
 	private int health;
 	private int attack;
 	private int defense;
 	private int mana;
 	private int agility; // quanto maior a agilidade, maior a chance de acertar o ataque
 	private int speed;
-	private boolean moving;
-	private int direction;
 	private boolean dead;
 	
-	public Player(String playerClass) {
+	public Player(String playerClass, ScreenSettings screenSettings) {
 		
 		this.playerClass = playerClass;
+		this.screenSettings = screenSettings;
+		importImage();
 		
+	}
+	
+	private void importImage() {
+		
+		playerPositionImage = new BufferedImage[4];
+		
+		try {
+			this.playerPositionImage[0] = ImageIO.read(getClass().getResourceAsStream("/knight/knightFront.png"));
+			this.playerPositionImage[1] = ImageIO.read(getClass().getResourceAsStream("/knight/knightLeft.png"));
+			this.playerPositionImage[2] = ImageIO.read(getClass().getResourceAsStream("/knight/knightBack.png"));
+			this.playerPositionImage[3] = ImageIO.read(getClass().getResourceAsStream("/knight/knightRight.png"));
+			
+			currentPlayerPosition = this.playerPositionImage[0];
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+	}
+	
+	public void draw(Graphics2D g2D) {
+		g2D.drawImage(currentPlayerPosition, playerX, playerY, screenSettings.getTileSize(), screenSettings.getTileSize(), null);
+	}
+	
+	public void changeDeltaX(int speed) {
+		
+		this.playerX += speed;
+	}
+	
+	public void changeDeltaY(int speed) {
+		
+		this.playerY += speed;
+	}
+
+
+	public BufferedImage getCurrentPlayerPosition() {
+		
+		return currentPlayerPosition;
+	}
+
+
+	public void setCurrentPlayerPosition(BufferedImage currentPlayerPosition) {
+		
+		this.currentPlayerPosition = currentPlayerPosition;
+	}
+
+	
+	public BufferedImage[] getPlayerPositionImage() {
+		
+		return playerPositionImage;
+	}
+	
+	
+	public void setPlayerPositionImage(BufferedImage[] playerPositionImage) {
+		
+		this.playerPositionImage = playerPositionImage;
 	}
 	
 	
@@ -123,25 +194,19 @@ public class Player {
 		this.playerY = playerY;
 	}
 
-
-	public boolean isMoving() {
-		return moving;
+	public int getSquareX() {
+		return squareX;
 	}
 
-
-	public void setMoving(boolean moving) {
-		this.moving = moving;
+	public void setSquareX(int squareX) {
+		this.squareX = squareX;
 	}
 
-
-	public int getDirection() {
-		return direction;
+	public int getSquareY() {
+		return squareY;
 	}
 
-
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-	
-	
+	public void setSquareY(int squareY) {
+		this.squareY = squareY;
+	}	
 }

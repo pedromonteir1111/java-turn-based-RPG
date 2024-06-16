@@ -2,8 +2,12 @@ package game;
 
 import java.awt.Color;
 
+import combat.CombatSystem;
+import gamestates.GameMenu;
+import gamestates.Gamestate;
 import playerClasses.Player;
 import playerClasses.Warrior;
+import userInputs.Mouse;
 
 public class Game {
 	
@@ -15,17 +19,22 @@ public class Game {
 	
 	public Game() {
 		
-		screenSettings = new ScreenSettings(5);
-		player = new Warrior();
-		gamePanel = new GamePanel(player, screenSettings);
+		screenSettings = new ScreenSettings(4);
+		
+		initObjects();
+		
 		gameWindow = new GameWindow(gamePanel, screenSettings);
 		
 		gamePanel.setBackground(Color.black);
 		gamePanel.setFocusable(true);
 		gamePanel.requestFocus();
 		
-		
-		
 	}
 	
+	public void initObjects() {
+		
+		player = new Warrior(screenSettings);
+		gamePanel = new GamePanel(player, screenSettings);
+			
+	}
 }

@@ -18,6 +18,14 @@ public class ScreenSettings {
 		this.tileSize = 16 * scale;
 	}
 	
+	public int getMaxCol() {
+		return screenWidth/tileSize;
+	}
+	
+	public int getMaxRow() {
+		return screenHeight/tileSize;
+	}
+	
 	public int getScreenWidth() {
 		return this.screenWidth;
 	}
