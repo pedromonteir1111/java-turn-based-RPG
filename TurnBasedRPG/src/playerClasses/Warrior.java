@@ -1,13 +1,14 @@
 package playerClasses;
+import game.ScreenSettings;
 import weapons.Sword;
 
 public class Warrior extends Player {
 	
 	private Sword warriorWeapon;
 	
-		public Warrior() {
+		public Warrior(ScreenSettings screenSettings) {
 			
-			super("Warrior");
+			super("Warrior", screenSettings);
 			
 			this.warriorWeapon = new Sword();
 			this.warriorWeapon.setWeaponType("Espada de Aço");

@@ -1,6 +1,6 @@
 package enemies;
 
-public class Goblin extends Enemies {
+public class Goblin extends Enemy {
 	
 		public Goblin() {
 			
