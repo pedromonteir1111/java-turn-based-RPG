@@ -5,15 +5,19 @@ import java.awt.event.KeyListener;
 
 import combat.CombatSystem;
 import game.GamePanel;
+//import game.MapObjects;
 import gamestates.Gamestate;
-import playerClasses.Player;
+import entities.Player;
 
 
 public class InputsFromKeyboard implements KeyListener {
 	
 	private GamePanel gamePanel;
 	private Player playerClass;
-	CombatSystem combat;
+//	private MapObjects mapObjects;
+	private CombatSystem combat;
+	private int spriteIndex = 0;
+	private int spriteCounter = 0;
 	
 	
 	public InputsFromKeyboard(GamePanel gamePanel, Player playerClass, CombatSystem combat) {
@@ -21,6 +25,7 @@ public class InputsFromKeyboard implements KeyListener {
 		this.gamePanel = gamePanel;
 		this.playerClass = playerClass;
 		this.combat = combat;
+//		this.mapObjects = mapObjects;
 		
 	}
 
@@ -32,48 +37,66 @@ public class InputsFromKeyboard implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		
+		updatePlayerAnimation();
 			
 		switch(e.getKeyCode()) {	
 		
 		case KeyEvent.VK_W:
 			
 			if (Gamestate.state != Gamestate.COMBAT) {
+				
 				playerClass.changeDeltaY(-playerClass.getSpeed());
-				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[2]);
+				playerClass.setCurrentPlayerPosition(playerClass.getUpDirection()[spriteIndex + 1]);	
 				gamePanel.repaint();
 				gamePanel.revalidate();
+				
 			}
+			
 			break;
 		
 		case KeyEvent.VK_A:
 			
 			if (Gamestate.state != Gamestate.COMBAT) {
 				playerClass.changeDeltaX(-playerClass.getSpeed());
-				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[1]);
+				
+				playerClass.setCurrentPlayerPosition(playerClass.getLeftDirection()[spriteIndex + 1]);
+					
 				gamePanel.repaint();
-				gamePanel.revalidate();
+				gamePanel.revalidate();		
+				
 			}
+			
 			break;
 			
 		case KeyEvent.VK_S:
 			
 			if (Gamestate.state != Gamestate.COMBAT) {
 				playerClass.changeDeltaY(playerClass.getSpeed());
-				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[0]);
+				
+				playerClass.setCurrentPlayerPosition(playerClass.getDownDirection()[spriteIndex + 1]);
 				gamePanel.repaint();
-				gamePanel.revalidate();
+				gamePanel.revalidate();	
+							
 			}
+			
 			break;	
 			
 		case KeyEvent.VK_D:
 			
 			if (Gamestate.state != Gamestate.COMBAT) {
 				playerClass.changeDeltaX(playerClass.getSpeed());
-				playerClass.setCurrentPlayerPosition(playerClass.getPlayerPositionImage()[3]);
+				
+				playerClass.setCurrentPlayerPosition(playerClass.getRightDirection()[spriteIndex + 1]);
+				
 				gamePanel.repaint();
 				gamePanel.revalidate();
+					
+				
 			}
+			
 			break;
+			
 			
 		case KeyEvent.VK_O:
 			
@@ -92,20 +115,61 @@ public class InputsFromKeyboard implements KeyListener {
 		
 		}
 		
+//		if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_D) {
+//
+//            mapObjects.checkCollision(playerClass);
+//        }
+			
+	}
+
+	private void updatePlayerAnimation() {
 		
+		spriteCounter++;
 		
-//		case KeyEvent.VK_ENTER:
-//			
-//			gamePanel.startGame();
-//			break;		
+		if (spriteCounter > 10) {
+			
+			spriteIndex = (spriteIndex + 1) % 2;
+			spriteCounter = 0;
+		}
+		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
+		
+		  switch(e.getKeyCode()) {
+		  
+		  case KeyEvent.VK_W:
+		  
+		  playerClass.setCurrentPlayerPosition(playerClass.getUpDirection()[0]);
+		  gamePanel.repaint();
+		  
+		  break;
+		  
+		  case KeyEvent.VK_S:
+		  
+		  playerClass.setCurrentPlayerPosition(playerClass.getDownDirection()[0]);
+		  gamePanel.repaint();
+		  
+		  break;
+		  
+		  case KeyEvent.VK_A:
+		  
+		  playerClass.setCurrentPlayerPosition(playerClass.getLeftDirection()[0]);
+		  gamePanel.repaint();
+		  
+		  break;
+		  
+		  case KeyEvent.VK_D:
+		  
+		  playerClass.setCurrentPlayerPosition(playerClass.getRightDirection()[0]);
+		  gamePanel.repaint();
+		  
+		  break;
+		  
+		  }
+	
 	}
-	
-	
 
 }

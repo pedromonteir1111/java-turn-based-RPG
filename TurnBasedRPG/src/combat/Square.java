@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import enemies.Enemy;
-import playerClasses.Player;
+import entities.Enemy;
+import entities.Player;
 
 public class Square {
 	
