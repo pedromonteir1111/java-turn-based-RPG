@@ -10,9 +10,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import combat.CombatSystem;
+import entities.Player;
 import gamestates.Gamestate;
 import map.MapGenerator;
-import playerClasses.Player;
 import userInputs.InputsFromKeyboard;
 import userInputs.Mouse;
 

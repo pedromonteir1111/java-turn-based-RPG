@@ -13,9 +13,6 @@ public class ScreenSettings {
 	public ScreenSettings(int scale) {
 		
 		this.setScale(scale);
-		this.screenWidth = width * scale;
-		this.screenHeight = height * scale;
-		this.tileSize = 16 * scale;
 	}
 	
 	public int getMaxCol() {

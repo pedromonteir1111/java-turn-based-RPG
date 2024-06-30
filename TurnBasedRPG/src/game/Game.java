@@ -3,10 +3,10 @@ package game;
 import java.awt.Color;
 
 import combat.CombatSystem;
+import entities.Player;
+import entities.Warrior;
 import gamestates.GameMenu;
 import gamestates.Gamestate;
-import playerClasses.Player;
-import playerClasses.Warrior;
 import userInputs.Mouse;
 
 public class Game {

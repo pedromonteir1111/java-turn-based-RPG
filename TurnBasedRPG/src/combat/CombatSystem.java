@@ -4,10 +4,10 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import enemies.Enemy;
+import entities.Enemy;
+import entities.Player;
 import game.GamePanel;
 import game.ScreenSettings;
-import playerClasses.Player;
 
 public class CombatSystem {
 	
@@ -51,8 +51,8 @@ public class CombatSystem {
 	public void runCombat(int mouseX, int mouseY, boolean mousePressed) {
 		
 		if (turns == 0) {
-			allies.get(0).setPlayerX(squares[allies.get(0).getSquareX()][allies.get(0).getSquareY()].getX());
-			allies.get(0).setPlayerY(squares[allies.get(0).getSquareX()][allies.get(0).getSquareY()].getY());
+			allies.get(0).setX(squares[allies.get(0).getSquareX()][allies.get(0).getSquareY()].getX());
+			allies.get(0).setY(squares[allies.get(0).getSquareX()][allies.get(0).getSquareY()].getY());
 		}
 		for(Player ally : allies) {
 			squares[ally.getSquareX()][ally.getSquareY()].setCurrentPlayer(ally);
@@ -75,8 +75,8 @@ public class CombatSystem {
 			}
 			
 			if(isPlayerAction && clickedSquare.getCurrentPlayer() == null) {
-				selectedPlayer.setPlayerX(clickedSquare.getX());
-				selectedPlayer.setPlayerY(clickedSquare.getY());
+				selectedPlayer.setX(clickedSquare.getX());
+				selectedPlayer.setY(clickedSquare.getY());
 				
 				selectedPlayer.setSquareX(clickedSquare.getRelativeX());
 				selectedPlayer.setSquareY(clickedSquare.getRelativeY());
