@@ -20,7 +20,9 @@ public class Mouse extends MouseAdapter {
 	public void mousePressed(MouseEvent e) {
 
 		if(Gamestate.state == Gamestate.COMBAT) {
-			combat.runCombat(x, y, true);
+			
+			Inputs.lastInput = Inputs.CLICK;
+			combat.runCombat(x, y, Inputs.CLICK);
 		}
 	}
 	
@@ -28,7 +30,7 @@ public class Mouse extends MouseAdapter {
 	public void mouseReleased(MouseEvent e) {
 		
 		if(Gamestate.state == Gamestate.COMBAT) {
-			combat.runCombat(x, y, false);
+			combat.runCombat(x, y, Inputs.NONE);
 		}
 	}
 	
@@ -48,7 +50,7 @@ public class Mouse extends MouseAdapter {
 		y = e.getY();
 		
 		if(Gamestate.state == Gamestate.COMBAT) {
-			combat.runCombat(x, y, false);
+			combat.runCombat(x, y, Inputs.NONE);
 		}
 	}
 }

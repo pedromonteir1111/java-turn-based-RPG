@@ -2,6 +2,7 @@ package combat;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -38,6 +39,27 @@ public class Square {
 	public void setImage(String state) {
 		
 		switch (state) {
+		
+			case "Range":
+				currentState = state;
+				break;
+		
+			case "Warrior":
+				currentState = state;
+				break;
+				
+			case "Mage":
+				currentState = state;
+				break;
+				
+			case "Archer":
+				currentState = state;
+				break;
+				
+			case "Rogue":
+				currentState = state;
+				break;
+		
 			case "Hover":
 				if(!currentState.equals("Selected")) {
 					currentState = state;
@@ -58,6 +80,11 @@ public class Square {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void emptySquare() {
+		this.currentEnemy = null;
+		this.currentPlayer = null;
 	}
 
 	public BufferedImage getImage() {

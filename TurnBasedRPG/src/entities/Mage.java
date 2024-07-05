@@ -1,22 +1,16 @@
 package entities;
-import game.ScreenSettings;
-import weapons.Sword;
 
-public class Warrior extends Player {
+import game.ScreenSettings;
+
+public class Mage extends Player {
 	
-	private Sword warriorWeapon;
-	
-		public Warrior(ScreenSettings screenSettings) {
+		public Mage(ScreenSettings screenSettings) {
 			
-			super(screenSettings, "/knight/knight");
-			
-			this.warriorWeapon = new Sword();
-			this.warriorWeapon.setWeaponType("Espada de Aço");
+			super(screenSettings, "/mage/mage");
 			
 			setHealth(100);
 //			setDefense();
 			setSpeed(15);
-			setWalkRange(5);
 			
 			setX(50);
 			setY(50);

@@ -1,8 +1,12 @@
 package entities;
 
+import game.ScreenSettings;
+
 public class Goblin extends Enemy {
 	
-		public Goblin() { }
+		public Goblin(ScreenSettings screenSettings) { 
+			super(screenSettings, "/goblin/goblin");
+		}
 
 		@Override
 		public void attackQ() {

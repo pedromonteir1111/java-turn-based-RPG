@@ -19,7 +19,7 @@ public class Game {
 	
 	public Game() {
 		
-		screenSettings = new ScreenSettings(4);
+		screenSettings = new ScreenSettings(5);
 		
 		initObjects();
 		
