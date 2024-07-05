@@ -1,8 +1,5 @@
 package gamestates;
 
-import java.awt.Color;
-
-
 public enum Gamestate {
 	
 	MENU, PLAYING, COMBAT;

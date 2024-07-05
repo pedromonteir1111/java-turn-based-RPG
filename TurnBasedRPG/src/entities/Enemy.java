@@ -1,5 +1,10 @@
 package entities;
 
-public abstract class Enemy extends Entity {
+import game.ScreenSettings;
 
+public abstract class Enemy extends Entity {
+	
+	public Enemy (ScreenSettings screenSettings, String filePath) {
+		super(screenSettings, filePath);
+	}
 }

@@ -3,6 +3,7 @@ package userInputs;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import combat.CombatStates;
 import combat.CombatSystem;
 import game.GamePanel;
 //import game.MapObjects;
@@ -101,17 +102,30 @@ public class InputsFromKeyboard implements KeyListener {
 		case KeyEvent.VK_O:
 			
 			Gamestate.state = Gamestate.COMBAT;
-			combat.runCombat(0, 0, false);
+			combat.runCombat(-1,-1, Inputs.NONE);
 			gamePanel.repaint();
 			gamePanel.revalidate();
 			break;
 			
 		case KeyEvent.VK_P:
 			
-			Gamestate.state = Gamestate.PLAYING;
+			combat.leaveCombat();
 			gamePanel.repaint();
 			gamePanel.revalidate();
-			break;	
+			break;
+			
+		case KeyEvent.VK_SPACE:
+			
+			if (Gamestate.state == Gamestate.COMBAT && CombatStates.state == CombatStates.WAITING_INPUT) {
+				
+				Inputs.lastInput = Inputs.SPACE;
+				combat.runCombat(-1, -1, Inputs.SPACE);	
+				gamePanel.repaint();
+				gamePanel.revalidate();
+				
+			}
+			
+			break;
 		
 		}
 		
@@ -137,7 +151,7 @@ public class InputsFromKeyboard implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		
-		
+		if (Gamestate.state != Gamestate.COMBAT) {
 		  switch(e.getKeyCode()) {
 		  
 		  case KeyEvent.VK_W:
@@ -169,7 +183,8 @@ public class InputsFromKeyboard implements KeyListener {
 		  break;
 		  
 		  }
-	
+		  
+		}
 	}
 
 }
