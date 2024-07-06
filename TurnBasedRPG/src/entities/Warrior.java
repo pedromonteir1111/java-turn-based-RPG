@@ -16,7 +16,7 @@ public class Warrior extends Player {
 			setHealth(100);
 //			setDefense();
 			setSpeed(15);
-			setWalkRange(5);
+			setWalkRange(3 );
 			
 			setX(50);
 			setY(50);
