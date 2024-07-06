@@ -26,7 +26,6 @@ public class CombatSystem {
 	private String lastInput;
 	private int tileSize;
 	private int turns;
-	private boolean isPlayerAction;
 	private GamePanel gamePanel;
 	
 	private Player[] allies;
@@ -34,6 +33,7 @@ public class CombatSystem {
 	private ArrayList<Player> liveAllies = new ArrayList<Player>();
 	private ArrayList<Enemy> liveEnemies = new ArrayList<Enemy>();
 	private Player selectedPlayer;
+	private int playerIndex;
 	
 	public CombatSystem(Player player, ScreenSettings screenSettings, GamePanel gamePanel) {
 		
@@ -87,7 +87,12 @@ public class CombatSystem {
 						removeSelection();
 					}
 					
-					selectedSquares.push(clickedSquare);
+					if (getManhattanDistance(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(),
+							clickedSquare.getRelativeX(),
+							clickedSquare.getRelativeY()) <= selectedPlayer.getWalkRange()) {
+						
+						selectedSquares.push(clickedSquare);
+					}
 					
 				} else {
 					selectedSquares.removeElement(clickedSquare);
@@ -99,17 +104,11 @@ public class CombatSystem {
 			case SPACE:
 				
 				if (!selectedSquares.empty()) {
-					if (getManhattanDistance(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(),
-							selectedSquares.peek().getRelativeX(),
-							selectedSquares.peek().getRelativeY()) <= selectedPlayer.getWalkRange()) {
-
+					
 						CombatStates.state = CombatStates.ACTION_WALK;
 						runCombat(mouseX, mouseY, input);
-
-					} else {
-						java.awt.Toolkit.getDefaultToolkit().beep();
-					} 
 				}
+				
 				break;
 				
 			case W:
@@ -131,8 +130,13 @@ public class CombatSystem {
 			
 		case ACTION_WALK:
 			
+			removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 			walk();
-			turns++;
+			changeCharacter();
+			
+			break;
+			
+		case SELECT_ATTACK_LOCATION:
 			
 			break;
 
@@ -146,18 +150,46 @@ public class CombatSystem {
 		gamePanel.repaint();
 		gamePanel.revalidate();
 		
-		System.out.println(turns);
 	}
 	
-	//incompleto
 	private void showRange(int originX, int originY, int range) {
 		
-		for(int i = originY - range; i < originY + range - 1; i++) {
-			for(int j = originX - range; j < originY + range - 1; j++) {
+		for(int i = -range; i <= range; i++) {
+			for(int j = -range; j <= range; j++) {
 				
-				squares[j][i].setImage("Range");
+				if(Math.abs(i) + Math.abs(j) <= range && i + originX >= 0 && i + originX < 16 && j + originY >= 0 && j + originY < 7) {
+					 squares[i + originX][j + originY].setImage("Range");
+					 squares[i + originX][j + originY].setInWalkRange(true);
+				}
 			}
 		}	
+	}
+	
+	private void removeRange(int originX, int originY, int range) {
+		
+		for(int i = -range; i <= range; i++) {
+			for(int j = -range; j <= range; j++) {
+				
+				if(Math.abs(i) + Math.abs(j) <= range && i + originX >= 0 && i + originX < 16 && j + originY >= 0 && j + originY < 7) {
+					 squares[i + originX][j + originY].setImage("");
+					 squares[i + originX][j + originY].setInWalkRange(false);
+				}
+			}
+		}	
+	}
+	
+	private void changeCharacter() {
+		
+		playerIndex++;
+		
+		if (playerIndex > liveAllies.size() - 1) {
+			playerIndex = 0;
+			turns++;
+		}
+		
+		selectedPlayer = liveAllies.get(playerIndex);
+		
+		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
 
 	private void initCombat() {
@@ -177,6 +209,9 @@ public class CombatSystem {
 		CombatStates.state = CombatStates.WAITING_INPUT;
 		selectedPlayer = liveAllies.get(0);
 		turns++;
+		playerIndex = 0;
+		
+		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
 	
 	public void leaveCombat() {
@@ -192,6 +227,7 @@ public class CombatSystem {
 		Gamestate.state = Gamestate.PLAYING;
 		this.turns = 0;
 		removeSelection();
+		removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
 	
 	public void drawGrid(Graphics2D g2D) {
@@ -243,12 +279,21 @@ public class CombatSystem {
 	private void setSqrImages() {
 		
 		if (lastHoveredSquare != null) {
-			lastHoveredSquare.setImage("");
+			if (lastHoveredSquare.isInWalkRange()) {
+				lastHoveredSquare.setImage("Range");
+			} else {
+				lastHoveredSquare.setImage("");
+			}
 		}
 		
 		if (hoveredSquare != null) {
-			hoveredSquare.setImage("Hover");
+			if (hoveredSquare.isInWalkRange()) {
+				hoveredSquare.setImage("HoverRange");
+			} else {
+				hoveredSquare.setImage("Hover");
+			}
 		}
+		
 		
 		if(selectedPlayer instanceof Warrior) {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Warrior");
@@ -265,7 +310,7 @@ public class CombatSystem {
 		
 		
 		for(Square square : selectedSquares) {
-			square.setImage("Selected");
+			square.setImage("SelectedRange");
 		}
 		
 		if(hoveredSquare != lastHoveredSquare) {
@@ -275,7 +320,7 @@ public class CombatSystem {
 	
 	private void removeSelection() {
 		for(Square square : selectedSquares) {
-			square.setImage("");
+			square.setImage("Range");
 		}
 		
 		selectedSquares.removeAllElements();

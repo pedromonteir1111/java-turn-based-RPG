@@ -16,6 +16,7 @@ public class Square {
 	private int y;
 	private int relativeX;
 	private int relativeY;
+	private boolean isInWalkRange;
 
 	private String currentState;
 	
@@ -28,6 +29,7 @@ public class Square {
 		this.relativeX = relativeX;
 		this.relativeY = relativeY;
 		this.currentState = "";
+		this.setInWalkRange(false);
 		
 		try {
 			this.image = ImageIO.read(getClass().getResourceAsStream("/tiles/square.png"));
@@ -66,7 +68,17 @@ public class Square {
 				}
 				break;
 				
+			case "HoverRange":
+				if(!currentState.equals("Selected")) {
+					currentState = state;
+				}
+				break;
+				
 			case "Selected":
+				currentState = state;
+				break;
+				
+			case "SelectedRange":
 				currentState = state;
 				break;
 				
@@ -121,5 +133,13 @@ public class Square {
 
 	public int getRelativeY() {
 		return relativeY;
+	}
+
+	public boolean isInWalkRange() {
+		return isInWalkRange;
+	}
+
+	public void setInWalkRange(boolean isInWalkRange) {
+		this.isInWalkRange = isInWalkRange;
 	}
 }
