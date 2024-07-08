@@ -19,6 +19,7 @@ public abstract class Entity {
 	private int defense;
 	private int speed;
 	private int walkRange;
+	private int level;
 	private BufferedImage currentPosition;
 	private BufferedImage[] upDirection, downDirection, leftDirection, rightDirection;
 	private ScreenSettings screenSettings;
@@ -167,4 +168,9 @@ public abstract class Entity {
 	public int getWalkRange() { return walkRange; }
 
 	public void setWalkRange(int walkRange) { this.walkRange = walkRange; }
+
+	public int getLevel() { return level; }
+
+	public void setLevel(int level) { this.level = level; }
+		
 }

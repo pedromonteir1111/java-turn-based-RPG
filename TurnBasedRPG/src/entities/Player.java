@@ -11,9 +11,6 @@ import game.ScreenSettings;
 
 public abstract class Player extends Entity {
 
-//	private BufferedImage[] playerPositionImage;
-	
-
 	public Player(ScreenSettings screenSettings, String filePath) {
 
 		super(screenSettings, filePath);

@@ -1,6 +1,6 @@
 package entities;
 import game.ScreenSettings;
-import weapons.Sword;
+import items.Sword;
 
 public class Warrior extends Player {
 	
@@ -10,8 +10,7 @@ public class Warrior extends Player {
 			
 			super(screenSettings, "/knight/knight");
 			
-			this.warriorWeapon = new Sword();
-			this.warriorWeapon.setWeaponType("Espada de Aço");
+			this.warriorWeapon = new Sword("Espada de aço", 0);
 			
 			setHealth(100);
 //			setDefense();
