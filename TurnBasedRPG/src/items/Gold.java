@@ -6,11 +6,9 @@ public class Gold extends Item {
 // gerar drops aleatórios de ouro dependendo do level do player
 	
 	private Player player;
-	private int gold;
 	
-	public Gold(String name, int level) { // como ouro n tem level, inicializar como -1
+	public Gold(String name, int level) { // como ouro não tem level, inicializar como -1
 		super(name, level);
-		
 	}
 
 	@Override
@@ -21,23 +19,33 @@ public class Gold extends Item {
 				setCollected(true);
 				System.out.println("Você coletou " + getItemName());
 				
+				addCollectedGold();
+				
 				return true;		
 			
 		}		
 			return false;		
 	}
 	
+	private void addCollectedGold() {
+		
+		player.setGold(player.getGold() + 50);
+		
+	}
+
 	public void showPlayerGold() {
 		
-		System.out.println(this.getGold());
+		System.out.println(player.getGold());
 	}
 	
 	
-	public void usingGold(int amountOfGold) {
+	public boolean isSufficientGoldForUp(int necessaryGold) {
 		
-		if (this.getGold() >= amountOfGold) {
+		if (player.getGold() >= necessaryGold) {
 			
-			setGold(this.getGold() - amountOfGold);			
+			player.setGold(player.getGold() - necessaryGold);	
+			
+			return true;
 		}
 		
 		else {
@@ -45,15 +53,8 @@ public class Gold extends Item {
 			//throw new Exception("Gold insuficiente para realizar o up!");
 		}
 		
+		return false;
 		
 	}
 
-	public int getGold() {
-		return gold;
-	}
-
-	public void setGold(int gold) {
-		this.gold = gold;
-	}
-	
 }

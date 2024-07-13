@@ -7,10 +7,8 @@ public abstract class Armor extends Item {
 	private Player player;
 	private int armorDefense;
 
-	public Armor(String name, int level) {
-		
-		super(name, level);
-		
+	public Armor(String name, int level) {	
+		super(name, level);		
 	}
 
 	@Override
@@ -35,7 +33,7 @@ public abstract class Armor extends Item {
 		return false;
 	}
 	
-	public abstract void upArmorLevel(Armor armor);
+	public abstract void upArmorLevel(Armor armor, int necessaryGold);
 	
 	public int getArmorDefense() {
 		return armorDefense;

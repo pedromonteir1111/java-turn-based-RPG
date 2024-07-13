@@ -15,6 +15,11 @@ import entities.Player;
 import entities.Warrior;
 import gamestates.GameMenu;
 import gamestates.Gamestate;
+import inventory.Equipable;
+import inventory.PlayerInventory;
+import inventory.Usable;
+import items.Elixir;
+import items.Item;
 import userInputs.Mouse;
 
 public class Game {
@@ -22,7 +27,10 @@ public class Game {
 	private ScreenSettings screenSettings;
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
+	
 	private Player player;
+	private PlayerInventory playerInventory;
+//	private Elixir elixir;
 	
 	// \/ para mudar imagem do cursor \/
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -49,6 +57,9 @@ public class Game {
 		
 		player = new Warrior(screenSettings);
 		gamePanel = new GamePanel(player, screenSettings);
+		playerInventory = new PlayerInventory(10);
+//		elixir = new Elixir("Elixir Milagroso", -1);
+		
 		
 		try {
 			cursorImage = ImageIO.read(getClass().getResourceAsStream("/ui/cursor.png"));
@@ -58,5 +69,40 @@ public class Game {
 		
 		c = toolkit.createCustomCursor(cursorImage , new Point(gamePanel.getX(), gamePanel.getY()), "img");
 			
+	}
+	
+	public void collectItem(Item item) {
+		
+		if (!item.isCollected()) {
+			playerInventory.addItem(item);
+		}
+	}
+	
+	public void useItem(Item item) {
+		
+		playerInventory.selectItem(item);
+		
+		if (item instanceof Usable) {
+			
+			((Usable) item).use(player);
+			
+			playerInventory.removeItem(item);
+		}
+		
+		else if (item instanceof Equipable) {
+			
+			((Equipable) item).equip(player);
+			
+		}
+			
+	}
+	
+	public void printInventory() {
+		
+		System.out.println("Seu inventário: ");
+		
+		for (Item item : playerInventory.getItems()) {
+			System.out.println(item.getItemName() + " ~~~ Level: " + item.getItemLevel());
+		}
 	}
 }

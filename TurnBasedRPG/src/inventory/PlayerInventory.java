@@ -1,9 +1,71 @@
 package inventory;
 
-public interface PlayerInventory<T> {
+import java.util.ArrayList;
+import java.util.List;
+
+import items.Item;
+
+public class PlayerInventory implements Inventory<Item> {
 	
-	public void addItem(T item); // quando o item for coletado, ele é adicionado ao inventário (se tiver espaço)
-	public void selectItem(T item); // no caso de um item consumível, selecionar significa consumir. tbm pode servir para ler informações do item
-	public void removeItem(T item); // remover um item do inventário
+	private List<Item> items;
+	private int inventoryCapacity;
 	
+	public PlayerInventory(int inventoryCapacity) {
+		
+		this.items = new ArrayList<>();
+		this.inventoryCapacity = inventoryCapacity;
+	}
+
+	@Override
+	public void addItem(Item item) {
+		
+		if (this.items.size() < getInventoryCapacity()) {
+			
+			this.items.add(item);
+			item.setCollected(true);
+			
+			System.out.println("[ITEM] O item " + item.getItemName() + " foi adicionado ao seu inventário.");
+		}
+		
+		else {
+			// throw new Exception("Seu inventário está cheio!");
+		}
+		
+	}
+
+	@Override
+	public void selectItem(Item item) {
+		
+		if(items.contains(item)) {
+			
+			System.out.println("Item selecionado: " + item.getItemName());
+		}
+		
+	}
+	
+	@Override
+	public void removeItem(Item item) {
+		
+		if (items.remove(item)) {
+			
+			item.setCollected(false);
+			
+			System.out.println("O item " + item.getItemName() + " foi removido do seu inventário.");		
+		}	
+		
+	}
+
+	@Override
+	public List<Item> getItems() {
+		return new ArrayList<>(items);
+	}
+	
+	public int getInventoryCapacity() {
+		return inventoryCapacity;
+	}
+
+	public void setInventoryCapacity(int inventoryCapacity) {
+		this.inventoryCapacity = inventoryCapacity;
+	}
+
 }

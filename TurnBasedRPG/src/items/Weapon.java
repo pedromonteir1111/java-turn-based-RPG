@@ -43,6 +43,6 @@ public abstract class Weapon extends Item {
 		return false;
 	}
 	
-	public abstract void upWeaponLevel(Weapon weapon); 
+	public abstract void upWeaponLevel(Weapon weapon, int necessaryGold); 
   
   }
