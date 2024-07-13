@@ -13,6 +13,7 @@ import entities.Warrior;
 import game.GamePanel;
 import game.ScreenSettings;
 import gamestates.Gamestate;
+import items.Elixir;
 import userInputs.Inputs;
 
 public class CombatSystem {
@@ -34,6 +35,8 @@ public class CombatSystem {
 	private ArrayList<Enemy> liveEnemies = new ArrayList<Enemy>();
 	private Player selectedPlayer;
 	private int playerIndex;
+	
+	private Elixir elixir;
 	
 	public CombatSystem(Player player, ScreenSettings screenSettings, GamePanel gamePanel) {
 		
@@ -191,14 +194,34 @@ public class CombatSystem {
 		
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
+	
+	private void useElixirIfCollected() {
+		
+		if (elixir != null && elixir.isCollected()) {
+			elixir.usingElixir(selectedPlayer);
+		}
+		
+	}
+	
+	private void removeElixirIfUsed() {
+		
+		if (elixir != null && elixir.isCollected()) {
+			
+			elixir.removingElixirEffect(selectedPlayer);
+			elixir.setCollected(false);
+			
+		}
+	}
 
 	private void initCombat() {
 		
 		for(Player ally : allies) {
-			if(ally != null) {				
-				liveAllies.add(ally);
+			if(ally != null) {	
+				liveAllies.add(ally);	
 			}
 		}
+		
+		useElixirIfCollected();
 		
 		liveAllies.get(0).setSquareX(4);
 		liveAllies.get(0).setSquareY(3);
@@ -223,6 +246,8 @@ public class CombatSystem {
 				squares[col][row].setImage("");
 			}		
 		}
+		
+		removeElixirIfUsed();
 		
 		Gamestate.state = Gamestate.PLAYING;
 		this.turns = 0;
