@@ -1,8 +1,9 @@
 package items;
 
 import entities.Player;
+import inventory.Usable;
 
-public class Book extends Item {
+public class Book extends Item implements Usable {
 	
 	private Player player;
 	private String bookContent; // a ideia é ter diferentes cores p/ representar diferentes tipos de livro, q podem contar sobre a história do reino, como lidar com os
@@ -30,25 +31,25 @@ public class Book extends Item {
 		
 	}
 	
-	public void checkBookContent() {
-		
-		if (isCollected()) {
-			
-			if (getBookContent().equals("Game history")) {
-				System.out.println(" ");
-			}
-			
-			else if (getBookContent().equals("Game tips")) {
-				System.out.println(" ");
-			}
-			
-			else if (getBookContent().equals("Treasure map")) {
-				System.out.println(" ");
-			}
-		
+	public void checkBookContentAndRead() {
+	
+		if (getBookContent().equals("Game history")) {
+			readingBook();
 		}
 		
-		setCollected(false);
+		else if (getBookContent().equals("Game tips")) {
+			readingBook();
+		}
+		
+		else if (getBookContent().equals("Treasure map")) {
+			readingBook();
+		}
+			
+	}
+	
+	public void readingBook() {
+		
+		
 	}
 
 	public String getBookContent() {
@@ -57,6 +58,22 @@ public class Book extends Item {
 
 	public void setBookContent(String bookContent) {
 		this.bookContent = bookContent;
+	}
+
+	@Override
+	public boolean use(Player player) {
+		
+		if (isCollected()) {
+			
+			checkBookContentAndRead();
+			
+			setCollected(false);
+			
+			return true;
+			
+		}
+		
+		return false;
 	}
 	
 	

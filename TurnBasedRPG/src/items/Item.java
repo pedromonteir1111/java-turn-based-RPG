@@ -1,5 +1,6 @@
 package items;
 
+
 public abstract class Item {
 	
 	private String itemName;
@@ -12,6 +13,7 @@ public abstract class Item {
 		
 		this.itemName = name;
 		this.itemLevel = level;
+		this.collected = false;
 	}
 
 	public abstract boolean isCollected();
@@ -26,6 +28,10 @@ public abstract class Item {
 
 	public int getItemLevel() {
 		return itemLevel;
+	}
+	
+	public void setItemLevel(int itemLevel) {
+		this.itemLevel = itemLevel;
 	}
 
 	public int getItemX() {

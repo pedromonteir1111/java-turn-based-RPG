@@ -195,21 +195,10 @@ public class CombatSystem {
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
 	
-	private void useElixirIfCollected() {
-		
-		if (elixir != null && elixir.isCollected()) {
-			elixir.usingElixir(selectedPlayer);
-		}
-		
-	}
-	
 	private void removeElixirIfUsed() {
 		
-		if (elixir != null && elixir.isCollected()) {
-			
-			elixir.removingElixirEffect(selectedPlayer);
-			elixir.setCollected(false);
-			
+		if (elixir != null && elixir.use(selectedPlayer)) {	
+			elixir.removingElixirEffect(selectedPlayer);	
 		}
 	}
 
@@ -221,7 +210,7 @@ public class CombatSystem {
 			}
 		}
 		
-		useElixirIfCollected();
+//		elixir.use(selectedPlayer);
 		
 		liveAllies.get(0).setSquareX(4);
 		liveAllies.get(0).setSquareY(3);
@@ -247,7 +236,7 @@ public class CombatSystem {
 			}		
 		}
 		
-		removeElixirIfUsed();
+//		removeElixirIfUsed();
 		
 		Gamestate.state = Gamestate.PLAYING;
 		this.turns = 0;

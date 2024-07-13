@@ -1,8 +1,9 @@
 package items;
 
 import entities.Player;
+import inventory.Usable;
 
-public class Apple extends Item {
+public class Apple extends Item implements Usable {
 	
 	private Player player;
 
@@ -26,11 +27,22 @@ public class Apple extends Item {
 	
 	public void restorePlayerHealth(Player player) {
 		
+		player.setHealth(player.getHealth() + 20);
+	}
+
+	@Override
+	public boolean use(Player player) {
+		
 		if (isCollected()) {
 			
-			player.setHealth(player.getHealth() + 20);
+			restorePlayerHealth(player);
 			
-			setCollected(false);		
+			System.out.println("[MAÇÃ] Você consumiu uma maçã e recuperou 20 de vida!");
+			setCollected(false);
+			
+			return true;
 		}
+		
+		return false;
 	}
 }
