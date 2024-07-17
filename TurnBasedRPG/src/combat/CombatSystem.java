@@ -35,6 +35,7 @@ public class CombatSystem {
 	private ArrayList<Enemy> liveEnemies = new ArrayList<Enemy>();
 	private Player selectedPlayer;
 	private int playerIndex;
+	int[] attackCoords;
 	
 	private Elixir elixir;
 	
@@ -62,6 +63,8 @@ public class CombatSystem {
 	
 	public void runCombat(int mouseX, int mouseY, Inputs input) {
 		
+		System.out.println(turns);
+		
 		if (turns == 0) {
 			initCombat();
 			//showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), 3);
@@ -71,13 +74,14 @@ public class CombatSystem {
 			squares[ally.getSquareX()][ally.getSquareY()].setCurrentPlayer(ally);
 		}
 	
+		if (mouseX >= 0) {
+			hoveredSquare = getSqr(mouseX, mouseY);
+		}
+		
 		switch (CombatStates.state) {
 		
 		case WAITING_INPUT:
 			
-			if (mouseX >= 0) {
-				hoveredSquare = getSqr(mouseX, mouseY);
-			}
 			switch(input) {
 			
 			case CLICK:
@@ -114,17 +118,19 @@ public class CombatSystem {
 				
 				break;
 				
-			case W:
-				break;
-				
-			case E:
-				break;
-				
 			case Q:
+				
+				removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+				removeSelection();
+				CombatStates.state = CombatStates.SELECT_ATTACK_LOCATION;
+				
 				break;
 				
 			case NONE:
 				
+				break;
+				
+			default:
 				break;
 			
 			}
@@ -140,6 +146,64 @@ public class CombatSystem {
 			break;
 			
 		case SELECT_ATTACK_LOCATION:
+			
+			int[] directions = getAttackDirection(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), hoveredSquare.getRelativeX(), hoveredSquare.getRelativeY());
+			
+			attackCoords = selectedPlayer.attack(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), directions[0], directions[1]);
+			
+			switch (input) {
+			
+			case CLICK:
+				
+				Square clickedSquare = getSqr(mouseX, mouseY);
+				
+				if(selectedSquares.search(clickedSquare) == -1) {
+					
+					if(!selectedSquares.isEmpty()) {
+						removeSelection();
+					}
+		
+					for(int i = 0; i < attackCoords.length; i += 2) {
+						if (attackCoords[i] < 16 && attackCoords[i] >= 0 && attackCoords[i + 1] < 7 && attackCoords[i + 1] >= 0) {
+							selectedSquares.push(squares[attackCoords[i]][attackCoords[i + 1]]);
+						}
+					}
+	
+				} else {
+					removeSelection();
+				}
+				
+				break;
+				
+			case ESC:
+				
+				removeSelection();
+				showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+				CombatStates.state = CombatStates.WAITING_INPUT;
+				break;
+				
+			case SPACE:
+				
+				if (!selectedSquares.empty()) {
+					
+						System.out.println("entrou");
+						CombatStates.state = CombatStates.ACTION_ATTACK;
+						runCombat(mouseX, mouseY, input);
+				}
+				
+				break;
+
+			default:
+				break;
+			}
+			
+			break;
+			
+		case ACTION_ATTACK:
+			
+			attack();
+			removeSelection();
+			changeCharacter();
 			
 			break;
 
@@ -192,6 +256,7 @@ public class CombatSystem {
 		
 		selectedPlayer = liveAllies.get(playerIndex);
 		
+		CombatStates.state = CombatStates.WAITING_INPUT;
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
 	
@@ -278,11 +343,53 @@ public class CombatSystem {
 
 		new Move(selectedPlayer, gamePanel, selectedSquares.peek());
 		
+		removeSelection();			
+	}
+	
+	private void attack() {
+		
+		int damage = selectedPlayer.getAttack();
+		
+		for (Square square : selectedSquares) {
+			
+			if (square.getCurrentEnemy() != null) {
+				Enemy currentEnemy = square.getCurrentEnemy();
+				
+				currentEnemy.setHealth(currentEnemy.getHealth() - damage);
+				
+				if(currentEnemy.getHealth() - damage <= 0) {
+					liveEnemies.remove(currentEnemy);
+				}
+			}
+		}
+		
 		removeSelection();
+	}
+	
+	private int[] getAttackDirection(int playerSquareX, int playerSquareY, int mouseSquareX, int mouseSquareY) {
 		
-		CombatStates.state = CombatStates.WAITING_INPUT;
+		int[] directions;
+		int x = mouseSquareX - playerSquareX;
+		int y = mouseSquareY - playerSquareY;
 		
+		if (x + y >= 0) {
+			
+			if(x >= y) {
+				directions = new int[] {1, 0};
+			} else {
+				directions = new int[] {0, 1};
+			}
+			
+		} else {
+			
+			if(x > y) {
+				directions = new int[] {0, -1};
+			} else {
+				directions = new int[] {-1, 0};
+			}
+		}
 		
+		return directions;
 	}
 	
 	private Square getSqr(int x, int y) {
@@ -322,10 +429,21 @@ public class CombatSystem {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Rogue");
 		}
 		
-		
-		for(Square square : selectedSquares) {
-			square.setImage("SelectedRange");
+		if (CombatStates.state == CombatStates.WAITING_INPUT) {
+			for (Square square : selectedSquares) {
+				square.setImage("SelectedRange");
+			} 
+		} else if (CombatStates.state == CombatStates.SELECT_ATTACK_LOCATION) {
+			
+			for (Square square : selectedSquares) {
+				square.setImage("SelectedRed");
+			} 
+		} else {
+			for (Square square : selectedSquares) {
+				square.setImage("Selected");
+			} 
 		}
+		
 		
 		if(hoveredSquare != lastHoveredSquare) {
 			lastHoveredSquare = hoveredSquare;
@@ -333,10 +451,18 @@ public class CombatSystem {
 	}
 	
 	private void removeSelection() {
-		for(Square square : selectedSquares) {
-			square.setImage("Range");
+		if (!selectedSquares.empty()) {
+			if (CombatStates.state == CombatStates.WAITING_INPUT) {
+				for (Square square : selectedSquares) {
+					square.setImage("Range");
+				}
+			} else {
+				for (Square square : selectedSquares) {
+					square.setImage("");
+				}
+			} 
+			
+			selectedSquares.removeAllElements();
 		}
-		
-		selectedSquares.removeAllElements();
 	}
 }

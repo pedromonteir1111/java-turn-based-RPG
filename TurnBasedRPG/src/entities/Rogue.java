@@ -19,21 +19,10 @@ public class Rogue extends Player {
 }
 
 	@Override
-	public void attackQ() {
-		// TODO Auto-generated method stub
+	public int[] attack(int x, int y, int directionX, int directionY) {
+		
+		return new int[] { (x + 1) * directionX, (y + 1) * directionY, (x + 2) * directionX, (y + 2) * directionY };
 		
 	}
-
-	@Override
-	public void attackW() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void attackE() {
-		// TODO Auto-generated method stub
-		
-	}	
 
 }

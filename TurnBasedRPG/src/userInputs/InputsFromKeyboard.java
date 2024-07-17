@@ -116,10 +116,36 @@ public class InputsFromKeyboard implements KeyListener {
 			
 		case KeyEvent.VK_SPACE:
 			
-			if (Gamestate.state == Gamestate.COMBAT && CombatStates.state == CombatStates.WAITING_INPUT) {
+			if (Gamestate.state == Gamestate.COMBAT) {
 				
 				Inputs.lastInput = Inputs.SPACE;
 				combat.runCombat(-1, -1, Inputs.SPACE);	
+				gamePanel.repaint();
+				gamePanel.revalidate();
+				
+			}
+			
+			break;
+			
+		case KeyEvent.VK_Q:
+			
+			if (Gamestate.state == Gamestate.COMBAT) {
+				
+				Inputs.lastInput = Inputs.Q;
+				combat.runCombat(-1, -1, Inputs.Q);	
+				gamePanel.repaint();
+				gamePanel.revalidate();
+				
+			}
+			
+			break;
+			
+		case KeyEvent.VK_ESCAPE:
+			
+			if (Gamestate.state == Gamestate.COMBAT && CombatStates.state == CombatStates.SELECT_ATTACK_LOCATION) {
+				
+				Inputs.lastInput = Inputs.ESC;
+				combat.runCombat(-1, -1, Inputs.ESC);	
 				gamePanel.repaint();
 				gamePanel.revalidate();
 				

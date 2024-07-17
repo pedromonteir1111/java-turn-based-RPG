@@ -127,12 +127,8 @@ public abstract class Entity {
 		this.setY(getY() + speed);
 	}
 	
-	public abstract void attackQ();
+	public abstract int[] attack(int x, int y, int directionX, int directionY);
 	
-	public abstract void attackW();
-	
-	public abstract void attackE();
-
 	public int getHealth() { return health; }
 
 	public void setHealth(int health) { this.health = health; }
