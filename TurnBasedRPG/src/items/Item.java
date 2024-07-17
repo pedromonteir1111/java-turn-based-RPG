@@ -7,6 +7,8 @@ public abstract class Item {
 	private int itemLevel;
 	private int itemX;
 	private int itemY;
+	private int relativeX;
+	private int relativeY;
 	private boolean collected;
 	
 	public Item(String name, int level) {
@@ -48,6 +50,22 @@ public abstract class Item {
 
 	public void setItemY(int itemY) {
 		this.itemY = itemY;
+	}
+
+	public int getRelativeX() {
+		return relativeX;
+	}
+
+	public void setRelativeX(int relativeX) {
+		this.relativeX = relativeX;
+	}
+
+	public int getRelativeY() {
+		return relativeY;
+	}
+
+	public void setRelativeY(int relativeY) {
+		this.relativeY = relativeY;
 	}
 
 
