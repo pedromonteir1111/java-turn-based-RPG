@@ -55,6 +55,7 @@ public class GamePanel extends JPanel {
 				break;
 	
 			case COMBAT:
+				combat.drawEnemies(g2D);
 				combat.drawGrid(g2D);
 				break;
 				
