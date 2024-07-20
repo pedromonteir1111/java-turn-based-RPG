@@ -101,10 +101,13 @@ public class InputsFromKeyboard implements KeyListener {
 			
 		case KeyEvent.VK_O:
 			
-			Gamestate.state = Gamestate.COMBAT;
-			combat.runCombat(-1,-1, Inputs.NONE);
-			gamePanel.repaint();
-			gamePanel.revalidate();
+			if (Gamestate.state != Gamestate.COMBAT) {
+				Gamestate.state = Gamestate.COMBAT;
+				combat.createEnemies(new int[] { 0, 0 });
+				combat.runCombat(-1, -1, Inputs.NONE);
+				gamePanel.repaint();
+				gamePanel.revalidate();
+			}
 			break;
 			
 		case KeyEvent.VK_P:
