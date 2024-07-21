@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import combat.CombatSystem;
+import entities.Mage;
 import entities.Player;
 import entities.Warrior;
 import gamestates.GameMenu;
@@ -33,6 +34,7 @@ public class Game {
 //	private InventoryUI inventoryUI;
 	
 	private Player player;
+	private Player mage;
 	private PlayerInventory playerInventory;
 //	private Elixir elixir;
 	
@@ -59,6 +61,11 @@ public class Game {
 	public void initObjects() {
 		
 		player = new Warrior(screenSettings);
+<<<<<<< HEAD
+=======
+		mage = new Mage(screenSettings);
+		gamePanel = new GamePanel(player, mage, screenSettings);
+>>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		playerInventory = new PlayerInventory(10);
 		System.out.println("Inventário criado com itens: " + playerInventory.getItems().size());
 		gamePanel = new GamePanel(player, screenSettings, playerInventory);

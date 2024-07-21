@@ -100,10 +100,13 @@ public class InputsFromKeyboard implements KeyListener {
 			
 		case KeyEvent.VK_O:
 			
-			Gamestate.state = Gamestate.COMBAT;
-			combat.runCombat(-1,-1, Inputs.NONE);
-			gamePanel.repaint();
-			gamePanel.revalidate();
+			if (Gamestate.state != Gamestate.COMBAT) {
+				Gamestate.state = Gamestate.COMBAT;
+				combat.createEntities(new int[] { 0, 0 });
+				combat.runCombat(-1, -1, Inputs.NONE);
+				gamePanel.repaint();
+				gamePanel.revalidate();
+			}
 			break;
 			
 		case KeyEvent.VK_P:
@@ -115,7 +118,7 @@ public class InputsFromKeyboard implements KeyListener {
 			
 		case KeyEvent.VK_SPACE:
 			
-			if (Gamestate.state == Gamestate.COMBAT && CombatStates.state == CombatStates.WAITING_INPUT) {
+			if (Gamestate.state == Gamestate.COMBAT && CombatStates.state != CombatStates.ENEMY_TURN) {
 				
 				Inputs.lastInput = Inputs.SPACE;
 				combat.runCombat(-1, -1, Inputs.SPACE);	
@@ -124,6 +127,38 @@ public class InputsFromKeyboard implements KeyListener {
 				
 				break;
 			}
+<<<<<<< HEAD
+=======
+			
+			break;
+			
+		case KeyEvent.VK_Q:
+			
+			if (Gamestate.state == Gamestate.COMBAT) {
+				
+				Inputs.lastInput = Inputs.Q;
+				combat.runCombat(-1, -1, Inputs.Q);	
+				gamePanel.repaint();
+				gamePanel.revalidate();
+				
+			}
+			
+			break;
+			
+		case KeyEvent.VK_ESCAPE:
+			
+			if (Gamestate.state == Gamestate.COMBAT && CombatStates.state == CombatStates.SELECT_ATTACK_LOCATION) {
+				
+				Inputs.lastInput = Inputs.ESC;
+				combat.runCombat(-1, -1, Inputs.ESC);	
+				gamePanel.repaint();
+				gamePanel.revalidate();
+				
+			}
+			
+			break;
+		
+>>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		}
 	}
 			

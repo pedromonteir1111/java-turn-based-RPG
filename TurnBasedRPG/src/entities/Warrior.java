@@ -12,10 +12,10 @@ public class Warrior extends Player {
 			
 			this.warriorWeapon = new Sword("Espada de aço", 0);
 			
-			setHealth(100);
-//			setDefense();
+			setMaxHealth(100);
+			setAttack(20);
 			setSpeed(15);
-			setWalkRange(3 );
+			setWalkRange(4);
 			
 			setX(50);
 			setY(50);
@@ -24,21 +24,10 @@ public class Warrior extends Player {
 	}
 
 		@Override
-		public void attackQ() {
-			// TODO Auto-generated method stub
+		public int[] attack(int x, int y, int directionX, int directionY) {
+			
+			return new int[] { x + 1 * directionX, y + 1 * directionY, x + 2 * directionX, y + 2 * directionY };
 			
 		}
-
-		@Override
-		public void attackW() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void attackE() {
-			// TODO Auto-generated method stub
-			
-		}	
 
 }

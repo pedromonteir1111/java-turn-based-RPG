@@ -15,6 +15,7 @@ public abstract class Entity {
 	private int squareX;
 	private int squareY;
 	private int health;
+	private int maxHealth;
 	private int attack;
 	private int defense;
 	private int speed;
@@ -127,12 +128,8 @@ public abstract class Entity {
 		this.setY(getY() + speed);
 	}
 	
-	public abstract void attackQ();
+	public abstract int[] attack(int x, int y, int directionX, int directionY);
 	
-	public abstract void attackW();
-	
-	public abstract void attackE();
-
 	public int getHealth() { return health; }
 
 	public void setHealth(int health) { this.health = health; }
@@ -172,5 +169,14 @@ public abstract class Entity {
 	public int getLevel() { return level; }
 
 	public void setLevel(int level) { this.level = level; }
+
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+		this.health = maxHealth;
+	}
 		
 }

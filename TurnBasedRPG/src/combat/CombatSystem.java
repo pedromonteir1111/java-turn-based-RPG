@@ -2,10 +2,13 @@ package combat;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Stack;
 
 import entities.Archer;
 import entities.Enemy;
+import entities.Entity;
+import entities.Goblin;
 import entities.Mage;
 import entities.Player;
 import entities.Rogue;
@@ -17,7 +20,7 @@ import items.Elixir;
 import userInputs.Inputs;
 
 public class CombatSystem {
-	
+
 	private ScreenSettings screenSettings;
 	private Square[][] squares;
 	private Stack<Square> selectedSquares = new Stack<Square>();
@@ -28,269 +31,551 @@ public class CombatSystem {
 	private int tileSize;
 	private int turns;
 	private GamePanel gamePanel;
-	
+	private Random random = new Random();
 	private Player[] allies;
-	private Enemy[] enemies;
 	private ArrayList<Player> liveAllies = new ArrayList<Player>();
 	private ArrayList<Enemy> liveEnemies = new ArrayList<Enemy>();
 	private Player selectedPlayer;
 	private int playerIndex;
-	
+	int[] attackCoords;
+	private int[] redCoords, lastRedCoords;
+	private boolean combatWin;
+	private boolean combatLoss;
+
 	private Elixir elixir;
-	
-	public CombatSystem(Player player, ScreenSettings screenSettings, GamePanel gamePanel) {
-		
+
+	public CombatSystem(Player player, Player mage, ScreenSettings screenSettings, GamePanel gamePanel) {
+
 		this.allies = new Player[4];
-		this.enemies = new Enemy[4];
 		this.allies[0] = player;
+		this.allies[1] = mage;
 		this.tileSize = screenSettings.getTileSize();
 		this.screenSettings = screenSettings;
 		this.gamePanel = gamePanel;
 		this.turns = 0;
-		
+
 		this.squares = new Square[16][7];
-		
+
 		for (int i = 0; i < 16; i++) {
 			for (int j = 0; j < 7; j++) {
 				squares[i][j] = new Square(i * tileSize + 2 * tileSize, j * tileSize + tileSize, i, j);
 			}
 		}
-		
+
 		this.lastSelectedSquare = squares[0][0];
 		this.lastHoveredSquare = squares[0][0];
 	}
-	
+
 	public void runCombat(int mouseX, int mouseY, Inputs input) {
-		
+
+		// System.out.println(turns);
+
 		if (turns == 0) {
 			initCombat();
-			//showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), 3);
+			// showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), 3);
 		}
-		
-		for(Player ally : liveAllies) {
+
+		for (Player ally : liveAllies) {
 			squares[ally.getSquareX()][ally.getSquareY()].setCurrentPlayer(ally);
 		}
-	
+
+		for (Enemy enemy : liveEnemies) {
+			squares[enemy.getSquareX()][enemy.getSquareY()].setCurrentEnemy(enemy);
+		}
+
+		if (mouseX >= 0) {
+			hoveredSquare = getSqr(mouseX, mouseY);
+		}
+
 		switch (CombatStates.state) {
-		
+
 		case WAITING_INPUT:
-			
-			if (mouseX >= 0) {
-				hoveredSquare = getSqr(mouseX, mouseY);
-			}
-			switch(input) {
-			
+
+			switch (input) {
+
 			case CLICK:
-				
-				Square clickedSquare = getSqr(mouseX, mouseY);	
-				
-				if(selectedSquares.search(clickedSquare) == -1 && clickedSquare.getCurrentPlayer() == null) {
-					
-					if(!selectedSquares.isEmpty()) {
+
+				Square clickedSquare = getSqr(mouseX, mouseY);
+
+				if (selectedSquares.search(clickedSquare) == -1 && clickedSquare.getCurrentPlayer() == null && clickedSquare.getCurrentEnemy() == null) {
+
+					if (!selectedSquares.isEmpty()) {
 						removeSelection();
 					}
-					
+
 					if (getManhattanDistance(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(),
 							clickedSquare.getRelativeX(),
 							clickedSquare.getRelativeY()) <= selectedPlayer.getWalkRange()) {
-						
+
 						selectedSquares.push(clickedSquare);
 					}
-					
+
 				} else {
 					selectedSquares.removeElement(clickedSquare);
-				}		
-				
-				break;	
-			
-			
-			case SPACE:
-				
-				if (!selectedSquares.empty()) {
-					
-						CombatStates.state = CombatStates.ACTION_WALK;
-						runCombat(mouseX, mouseY, input);
 				}
-				
+
 				break;
-				
-			case W:
+
+			case SPACE:
+
+				if (!selectedSquares.empty()) {
+
+					CombatStates.state = CombatStates.ACTION_WALK;
+					runCombat(mouseX, mouseY, input);
+				}
+
 				break;
-				
-			case E:
-				break;
-				
+
 			case Q:
+
+				removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+				removeSelection();
+				CombatStates.state = CombatStates.SELECT_ATTACK_LOCATION;
+
 				break;
-				
+
 			case NONE:
-				
+
 				break;
-			
+
+			default:
+				break;
+
 			}
-			
-			break;
-			
-		case ACTION_WALK:
-			
-			removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
-			walk();
-			changeCharacter();
-			
-			break;
-			
-		case SELECT_ATTACK_LOCATION:
-			
+
 			break;
 
+		case ACTION_WALK:
+
+			removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+			walk(selectedPlayer);
+			attackCoords = null;
+			redCoords = null;
+			lastRedCoords = null;
+			changeCharacter();
+
+			break;
+
+		case SELECT_ATTACK_LOCATION:
+
+			int[] directions = getAttackDirection(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(),
+					hoveredSquare.getRelativeX(), hoveredSquare.getRelativeY());
+
+			attackCoords = selectedPlayer.attack(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), directions[0], directions[1]);
+			
+			//comparar referencia, nao valor
+			if(lastRedCoords == redCoords) {
+				lastRedCoords = null;
+			} else {
+				lastRedCoords = redCoords;
+			}
+			
+			redCoords = attackCoords;
+			
+
+			switch (input) {
+
+			case CLICK:
+
+				Square clickedSquare = getSqr(mouseX, mouseY);
+
+				if (selectedSquares.search(clickedSquare) == -1) {
+
+					if (!selectedSquares.isEmpty()) {
+						removeSelection();
+					}
+
+					for (int i = 0; i < attackCoords.length; i += 2) {
+						if (attackCoords[i] < 16 && attackCoords[i] >= 0 && attackCoords[i + 1] < 7 && attackCoords[i + 1] >= 0) {
+							selectedSquares.push(squares[attackCoords[i]][attackCoords[i + 1]]);
+						}
+					}
+
+				} else {
+					removeSelection();
+				}
+
+				break;
+
+			case ESC:
+
+				removeSelection();
+				showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+				CombatStates.state = CombatStates.WAITING_INPUT;
+				break;
+
+			case SPACE:
+
+				if (!selectedSquares.empty()) {
+
+					CombatStates.state = CombatStates.ACTION_ATTACK;
+					runCombat(mouseX, mouseY, input);
+				}
+
+				break;
+
+			default:
+				break;
+			}
+
+			break;
+
+		case ACTION_ATTACK:
+
+			removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+			attack(selectedPlayer);
+			attackCoords = null;
+			redCoords = null;
+			lastRedCoords = null;
+			removeSelection();
+			changeCharacter();
+
+			break;
+			
 		default:
-		
+
 			break;
 		}
 		
 		setSqrImages();
-		
+
 		gamePanel.repaint();
 		gamePanel.revalidate();
-		
+
 	}
-	
+
 	private void showRange(int originX, int originY, int range) {
+
+		Stack<Square> inRangeSquares = inRange(originX, originY, range);
 		
-		for(int i = -range; i <= range; i++) {
-			for(int j = -range; j <= range; j++) {
-				
-				if(Math.abs(i) + Math.abs(j) <= range && i + originX >= 0 && i + originX < 16 && j + originY >= 0 && j + originY < 7) {
-					 squares[i + originX][j + originY].setImage("Range");
-					 squares[i + originX][j + originY].setInWalkRange(true);
-				}
-			}
-		}	
+		while(!inRangeSquares.empty()) {
+			
+			Square square = inRangeSquares.pop();
+			
+			square.setImage("Range");
+			square.setInWalkRange(true);
+		}
 	}
-	
+
 	private void removeRange(int originX, int originY, int range) {
+
+		Stack<Square> inRangeSquares = inRange(originX, originY, range);
 		
-		for(int i = -range; i <= range; i++) {
-			for(int j = -range; j <= range; j++) {
-				
-				if(Math.abs(i) + Math.abs(j) <= range && i + originX >= 0 && i + originX < 16 && j + originY >= 0 && j + originY < 7) {
-					 squares[i + originX][j + originY].setImage("");
-					 squares[i + originX][j + originY].setInWalkRange(false);
-				}
-			}
-		}	
+		while(!inRangeSquares.empty()) {
+			
+			Square square = inRangeSquares.pop();
+			
+			square.setImage("");
+			square.setInWalkRange(false);
+		}
 	}
 	
-	private void changeCharacter() {
+	private Stack<Square> inRange(int originX, int originY, int range) {
+
+		Stack<Square> inRangeSquares = new Stack<Square>();
 		
-		playerIndex++;
-		
-		if (playerIndex > liveAllies.size() - 1) {
-			playerIndex = 0;
-			turns++;
+		for (int i = -range; i <= range; i++) {
+			for (int j = -range; j <= range; j++) {
+
+				if (Math.abs(i) + Math.abs(j) <= range && i + originX >= 0 && i + originX < 16 && j + originY >= 0 && j + originY < 7) {
+					
+					inRangeSquares.push(squares[i + originX][j + originY]);
+				}
+			}
 		}
 		
-		selectedPlayer = liveAllies.get(playerIndex);
+		return inRangeSquares;
+	}
+
+	private void changeCharacter() {
+
+		playerIndex++;
+
+		if (playerIndex > liveAllies.size() - 1) {
+			playerIndex = 0;
+			
+			CombatStates.state = CombatStates.ENEMY_TURN;
+			ControlEnemies();
+			if (combatWin || combatLoss) return;
+			
+		} else {
+			CombatStates.state = CombatStates.WAITING_INPUT;
+		}	
 		
+		selectedPlayer = liveAllies.get(playerIndex);
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
-	
+
 	private void removeElixirIfUsed() {
-		
-		if (elixir != null && elixir.use(selectedPlayer)) {	
-			elixir.removingElixirEffect(selectedPlayer);	
+
+		if (elixir != null && elixir.use(selectedPlayer)) {
+			elixir.removingElixirEffect(selectedPlayer);
 		}
 	}
 
 	private void initCombat() {
+
+		combatLoss = false;
+		combatWin = false;
 		
-		for(Player ally : allies) {
-			if(ally != null) {	
-				liveAllies.add(ally);	
+		for (Player ally : allies) {
+			if (ally != null) {
+				liveAllies.add(ally);
 			}
 		}
-		
+
 //		elixir.use(selectedPlayer);
-		
-		liveAllies.get(0).setSquareX(4);
-		liveAllies.get(0).setSquareY(3);
-		
-		liveAllies.get(0).setX(squares[liveAllies.get(0).getSquareX()][liveAllies.get(0).getSquareY()].getX());
-		liveAllies.get(0).setY(squares[liveAllies.get(0).getSquareX()][liveAllies.get(0).getSquareY()].getY());
-		
+
+		for (Player ally : liveAllies) {
+
+			int x, y;
+
+			do {
+
+				x = random.nextInt(7);
+				y = random.nextInt(7);
+
+			} while (squares[x][y].getCurrentPlayer() != null || squares[x][y].getCurrentEnemy() != null);
+
+			ally.setSquareX(x);
+			ally.setSquareY(y);
+
+			ally.setX(squares[x][y].getX());
+			ally.setY(squares[x][y].getY());
+			
+			ally.setCurrentPlayerPosition(ally.getRightDirection()[1]);
+			
+			ally.setHealth(ally.getMaxHealth());
+		}
+
+		for (Enemy enemy : liveEnemies) {
+
+			int x, y;
+
+			do {
+
+				x = random.nextInt(9, 16);
+				y = random.nextInt(7);
+
+			} while (squares[x][y].getCurrentPlayer() != null || squares[x][y].getCurrentEnemy() != null);
+
+			enemy.setSquareX(x);
+			enemy.setSquareY(y);
+
+			enemy.setX(squares[x][y].getX());
+			enemy.setY(squares[x][y].getY());
+			
+			enemy.setCurrentPlayerPosition(enemy.getLeftDirection()[1]);
+		}
+
 		CombatStates.state = CombatStates.WAITING_INPUT;
 		selectedPlayer = liveAllies.get(0);
 		turns++;
 		playerIndex = 0;
-		
+
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
-	
+
 	public void leaveCombat() {
-		
-		for(int row = 0; row < 7; row++) {
-			for(int col = 0; col < 16; col++) {
-				
+
+		for (int row = 0; row < 7; row++) {
+			for (int col = 0; col < 16; col++) {
+
 				squares[col][row].emptySquare();
 				squares[col][row].setImage("");
-			}		
+			}
 		}
-		
+
 //		removeElixirIfUsed();
+
+		if(liveEnemies.isEmpty()) {
+			combatWin = true;
+			combatLoss = false;
+			
+		} else if (liveAllies.isEmpty()) {
+			combatWin = false;
+			combatLoss = true;
+		}
 		
 		Gamestate.state = Gamestate.PLAYING;
 		this.turns = 0;
 		removeSelection();
 		removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+		liveAllies.clear();
+		liveEnemies.clear();
 	}
-	
+
+	public void createEntities(int[] enemyTypes) {
+		// 0 eh goblin, 1 slime e 2 skeleton
+
+		for (int i = 0; i < enemyTypes.length; i++) {
+			switch (enemyTypes[i]) {
+			case 0:
+				liveEnemies.add(new Goblin(screenSettings));
+				break;
+
+			case 1:
+
+				break;
+
+			case 2:
+
+				break;
+
+			default:
+				break;
+			}
+		}
+		
+	}
+
+	public void drawEntities(Graphics2D g2D) {
+		for (Enemy enemy : liveEnemies) {
+			enemy.draw(g2D);
+		}
+		
+		for (Player player : liveAllies) {
+			player.draw(g2D);
+		}
+	}
+
 	public void drawGrid(Graphics2D g2D) {
-		
+
 		int x = 0, y = 0;
-		
+
 		x = tileSize * 2;
 		y = tileSize;
 
-		for(int row = 0; row < 7; row++) {
-			for(int col = 0; col < 16; col++) {
+		for (int row = 0; row < 7; row++) {
+			for (int col = 0; col < 16; col++) {
 				g2D.drawImage(squares[col][row].getImage(), x, y, tileSize, tileSize, null);
 				x += tileSize;
 			}
-				
+
 			x = tileSize * 2;
 			y += tileSize;
 		}
 	}
-	
-	private int getManhattanDistance(int x1, int y1, int x2, int y2) {
-		
-		return Math.abs(x2 - x1) + Math.abs(y2 - y1);
-		
-	}
-	
-	private void walk() {
-		
-		squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].emptySquare();
-		squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("");;
-		
-		selectedPlayer.setSquareX(selectedSquares.peek().getRelativeX());
-		selectedPlayer.setSquareY(selectedSquares.peek().getRelativeY());
 
-		new Move(selectedPlayer, gamePanel, selectedSquares.peek());
+	private int getManhattanDistance(int x1, int y1, int x2, int y2) {
+
+		return Math.abs(x2 - x1) + Math.abs(y2 - y1);
+
+	}
+
+	private void walk(Entity entity) {
+
+		squares[entity.getSquareX()][entity.getSquareY()].emptySquare();
+		squares[entity.getSquareX()][entity.getSquareY()].setImage("");
+
+		entity.setSquareX(selectedSquares.peek().getRelativeX());
+		entity.setSquareY(selectedSquares.peek().getRelativeY());
 		
+		if (entity instanceof Player) {
+			squares[entity.getSquareX()][entity.getSquareY()].setCurrentPlayer((Player) entity);
+		} else {
+			squares[entity.getSquareX()][entity.getSquareY()].setCurrentEnemy((Enemy) entity);
+		}
+		
+		new Move(entity, gamePanel, selectedSquares.peek());
+
 		removeSelection();
-		
-		CombatStates.state = CombatStates.WAITING_INPUT;
-		
-		
 	}
-	
+
+	private void attack(Entity entity) {
+
+		int damage = entity.getAttack();
+
+		if(entity instanceof Player) {
+			
+			for (Square square : selectedSquares) {
+				
+				if (square.getCurrentEnemy() != null) {
+					Enemy currentEnemy = square.getCurrentEnemy();
+					
+					currentEnemy.setHealth(currentEnemy.getHealth() - damage);
+					System.out.println(currentEnemy.getHealth());
+					
+					if (currentEnemy.getHealth() <= 0) {
+						liveEnemies.remove(currentEnemy);
+						square.emptySquare();
+					}
+				}
+			}
+			
+		} else {
+			
+			for (Square square : selectedSquares) {
+				
+				if (square.getCurrentPlayer() != null) {
+					
+					System.out.println("entrou");
+					Player currentPlayer = square.getCurrentPlayer();
+					
+					currentPlayer.setHealth(currentPlayer.getHealth() - damage);
+					System.out.println(currentPlayer);
+					
+					if (currentPlayer.getHealth() <= 0) {
+						liveAllies.remove(currentPlayer);
+						if (!liveAllies.isEmpty()) {
+							playerIndex = 0;
+							selectedPlayer = liveAllies.get(0);
+						}
+						square.emptySquare();
+					}
+				}
+			}
+		}
+		
+		if(liveAllies.isEmpty() || liveEnemies.isEmpty()) {
+			leaveCombat();
+		}
+
+		removeSelection();
+	}
+
+	private int[] getAttackDirection(int playerSquareX, int playerSquareY, int mouseSquareX, int mouseSquareY) {
+
+		int[] directions;
+		int x = mouseSquareX - playerSquareX;
+		int y = mouseSquareY - playerSquareY;
+
+		if (x + y >= 0) {
+
+			if (x >= y) {
+				directions = new int[] { 1, 0 };
+			} else {
+				directions = new int[] { 0, 1 };
+			}
+
+		} else {
+
+			if (x > y) {
+				directions = new int[] { 0, -1 };
+			} else {
+				directions = new int[] { -1, 0 };
+			}
+		}
+
+		return directions;
+	}
+
 	private Square getSqr(int x, int y) {
-		
-		return squares[Math.min(15, Math.max(0, (x - tileSize * 2)/tileSize))][Math.min(6, Math.max(0, (y - tileSize)/tileSize))];
+
+		return squares[Math.min(15, Math.max(0, (x - tileSize * 2) / tileSize))][Math.min(6,
+				Math.max(0, (y - tileSize) / tileSize))];
 	}
-	
+
 	private void setSqrImages() {
+
+		if (CombatStates.state == CombatStates.SELECT_ATTACK_LOCATION && lastRedCoords != null) {
+			for (int i = 0; i < lastRedCoords.length; i += 2) {
+				if (lastRedCoords[i] < 16 && lastRedCoords[i] >= 0 && lastRedCoords[i + 1] < 7
+						&& lastRedCoords[i + 1] >= 0) {
+					squares[lastRedCoords[i]][lastRedCoords[i + 1]].setImage("");
+				}
+			} 
+		}
 		
 		if (lastHoveredSquare != null) {
 			if (lastHoveredSquare.isInWalkRange()) {
@@ -299,44 +584,162 @@ public class CombatSystem {
 				lastHoveredSquare.setImage("");
 			}
 		}
-		
-		if (hoveredSquare != null) {
+
+		if (hoveredSquare != null && CombatStates.state != CombatStates.SELECT_ATTACK_LOCATION) {
 			if (hoveredSquare.isInWalkRange()) {
 				hoveredSquare.setImage("HoverRange");
 			} else {
 				hoveredSquare.setImage("Hover");
 			}
 		}
-		
-		
-		if(selectedPlayer instanceof Warrior) {
+
+		if (selectedPlayer instanceof Warrior) {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Warrior");
-			
-		} else if(selectedPlayer instanceof Mage) {
+
+		} else if (selectedPlayer instanceof Mage) {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Mage");
-			
-		} else if(selectedPlayer instanceof Archer) {
+
+		} else if (selectedPlayer instanceof Archer) {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Archer");
-			
-		} else if(selectedPlayer instanceof Rogue) {
+
+		} else if (selectedPlayer instanceof Rogue) {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Rogue");
 		}
 		
-		
-		for(Square square : selectedSquares) {
-			square.setImage("SelectedRange");
+		if (CombatStates.state == CombatStates.SELECT_ATTACK_LOCATION && attackCoords != null && redCoords != null) {
+			
+			for (int i = 0; i < redCoords.length; i += 2) {
+				if (redCoords[i] < 16 && redCoords[i] >= 0 && redCoords[i + 1] < 7 && redCoords[i + 1] >= 0) {
+					squares[attackCoords[i]][attackCoords[i + 1]].setImage("Red");
+				}
+			}
 		}
-		
-		if(hoveredSquare != lastHoveredSquare) {
+
+		if (CombatStates.state == CombatStates.WAITING_INPUT) {
+			for (Square square : selectedSquares) {
+				square.setImage("SelectedRange");
+			}
+		} else if (CombatStates.state == CombatStates.SELECT_ATTACK_LOCATION) {
+
+			for (Square square : selectedSquares) {
+				square.setImage("SelectedRed");
+			}
+		} else {
+			for (Square square : selectedSquares) {
+				square.setImage("Selected");
+			}
+		}
+
+		if (hoveredSquare != lastHoveredSquare) {
 			lastHoveredSquare = hoveredSquare;
 		}
 	}
-	
+
 	private void removeSelection() {
-		for(Square square : selectedSquares) {
-			square.setImage("Range");
+		if (!selectedSquares.empty()) {
+			if (CombatStates.state == CombatStates.WAITING_INPUT) {
+				for (Square square : selectedSquares) {
+					square.setImage("Range");
+				}
+			} else {
+				for (Square square : selectedSquares) {
+					square.setImage("");
+				}
+			}
+
+			selectedSquares.removeAllElements();
+		}
+	}
+	
+	private void ControlEnemies() {
+		
+		int[] directions;
+		
+		for (Enemy enemy : liveEnemies) {
+			
+			Square closestSquare = null;
+			Player closestPlayer = null;
+			boolean gonnaAttack = false;
+			
+			for (Player player : liveAllies) {
+				
+				if(closestPlayer == null) {
+					
+					closestPlayer = player;
+					
+				} else if (getManhattanDistance(enemy.getSquareX(), enemy.getSquareY(), player.getSquareX(), player.getSquareY())
+						< getManhattanDistance(enemy.getSquareX(), enemy.getSquareY(), closestPlayer.getSquareX(), closestPlayer.getSquareY())) {
+					
+					closestPlayer = player;
+				}
+				
+				if(getManhattanDistance(enemy.getSquareX(), enemy.getSquareY(), player.getSquareX(), player.getSquareY()) <= enemy.getAttackRange()) {
+					
+					gonnaAttack = true;
+					
+					directions = getAttackDirection(enemy.getSquareX(), enemy.getSquareY(), player.getSquareX(), player.getSquareY());
+					
+					attackCoords = enemy.attack(enemy.getSquareX(), enemy.getSquareY(), directions[0], directions[1]);
+					
+					for (int i = 0; i < attackCoords.length; i += 2) {
+						if (attackCoords[i] < 16 && attackCoords[i] >= 0 && attackCoords[i + 1] < 7 && attackCoords[i + 1] >= 0) {
+							selectedSquares.push(squares[attackCoords[i]][attackCoords[i + 1]]);
+						}
+						
+						setSqrImages();
+						gamePanel.repaint();
+						gamePanel.revalidate();				
+
+					}
+				}	
+			}
+			
+			if(!gonnaAttack) {
+				
+				Stack<Square> inRangeSquares = inRange(enemy.getSquareX(), enemy.getSquareY(), enemy.getWalkRange());
+				
+				while(!inRangeSquares.empty()) {
+					
+					Square square = inRangeSquares.pop();
+					
+					if(closestSquare == null && square.getCurrentEnemy() == null && square.getCurrentPlayer() == null) {
+						
+						closestSquare = square;
+						
+					} 
+					
+					if (closestSquare != null) {
+						
+						if (getManhattanDistance(square.getRelativeX(), square.getRelativeY(),
+								closestPlayer.getSquareX(), closestPlayer.getSquareY()) < getManhattanDistance(
+										closestSquare.getRelativeX(), closestSquare.getRelativeY(),
+										closestPlayer.getSquareX(), closestPlayer.getSquareY())
+								&& square.getCurrentEnemy() == null && square.getCurrentPlayer() == null) {
+
+							closestSquare = square;
+						} 
+					}
+				}
+				
+				if (closestSquare != null) {
+					selectedSquares.push(closestSquare);
+					walk(enemy);
+					removeSelection();
+				}
+				
+			} else {
+				
+				System.out.println("atacou");
+				attack(enemy);
+				removeSelection();
+				
+			}		
+			
+			if(combatLoss || combatWin) return;
+			
 		}
 		
-		selectedSquares.removeAllElements();
+		CombatStates.state = CombatStates.WAITING_INPUT;
+		turns++;
 	}
 }

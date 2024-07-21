@@ -20,6 +20,7 @@ import userInputs.Mouse;
 public class GamePanel extends JPanel {
 	
 	private Player playerClass;
+	private Player mage;
 	private ScreenSettings screenSettings;
 	private CombatSystem combat;
 	private Mouse mouse;
@@ -28,6 +29,7 @@ public class GamePanel extends JPanel {
 	
 	private MapGenerator mapGenerator;
 	
+<<<<<<< HEAD
 	
 //	private InventoryUI inventoryUI;
 	private boolean isInventoryOpen;
@@ -37,15 +39,25 @@ public class GamePanel extends JPanel {
 		
 		this.playerClass = playerClass;
 		
+=======
+	public GamePanel(Player playerClass, Player mage, ScreenSettings screenSettings) {
+		
+		this.playerClass = playerClass;
+		this.mage = mage;
+>>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		this.screenSettings = screenSettings; 
 		
 		/* this.inventoryUI = new InventoryUI(playerInventory, playerClass); */
 		this.isInventoryOpen = false;
 			
 		mapGenerator = new MapGenerator(this, screenSettings);
+<<<<<<< HEAD
 		
 		combat = new CombatSystem(playerClass, screenSettings, this);
 		
+=======
+		combat = new CombatSystem(playerClass, mage, screenSettings, this);
+>>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat);
 		
 		mouse = new Mouse(combat);
@@ -69,15 +81,23 @@ public class GamePanel extends JPanel {
 				break;
 	
 			case COMBAT:
+				
 				combat.drawGrid(g2D);
+				combat.drawEntities(g2D);
 				break;
 				
 			default:
 				break;
 		}
+<<<<<<< HEAD
 		
 		playerClass.draw(g2D);
 		
+=======
+		if (Gamestate.state != Gamestate.COMBAT) {
+			playerClass.draw(g2D);
+		}
+>>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		g2D.dispose();
 	}
 		
