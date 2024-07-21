@@ -19,6 +19,7 @@ import userInputs.Mouse;
 public class GamePanel extends JPanel {
 	
 	private Player playerClass;
+	private Player mage;
 	private ScreenSettings screenSettings;
 	private CombatSystem combat;
 	private Mouse mouse;
@@ -27,13 +28,14 @@ public class GamePanel extends JPanel {
 	
 	private MapGenerator mapGenerator;
 	
-	public GamePanel(Player playerClass, ScreenSettings screenSettings) {
+	public GamePanel(Player playerClass, Player mage, ScreenSettings screenSettings) {
 		
 		this.playerClass = playerClass;
+		this.mage = mage;
 		this.screenSettings = screenSettings; 
 		
 		mapGenerator = new MapGenerator(this, screenSettings);
-		combat = new CombatSystem(playerClass, screenSettings, this);
+		combat = new CombatSystem(playerClass, mage, screenSettings, this);
 		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat);
 		mouse = new Mouse(combat);
 		addMouseListener(mouse);
@@ -55,15 +57,17 @@ public class GamePanel extends JPanel {
 				break;
 	
 			case COMBAT:
-				combat.drawEnemies(g2D);
+				
 				combat.drawGrid(g2D);
+				combat.drawEntities(g2D);
 				break;
 				
 			default:
 				break;
 		}
-		playerClass.draw(g2D);
-		
+		if (Gamestate.state != Gamestate.COMBAT) {
+			playerClass.draw(g2D);
+		}
 		g2D.dispose();
 	}
 	

@@ -103,7 +103,7 @@ public class InputsFromKeyboard implements KeyListener {
 			
 			if (Gamestate.state != Gamestate.COMBAT) {
 				Gamestate.state = Gamestate.COMBAT;
-				combat.createEnemies(new int[] { 0, 0 });
+				combat.createEntities(new int[] { 0, 0 });
 				combat.runCombat(-1, -1, Inputs.NONE);
 				gamePanel.repaint();
 				gamePanel.revalidate();
@@ -119,7 +119,7 @@ public class InputsFromKeyboard implements KeyListener {
 			
 		case KeyEvent.VK_SPACE:
 			
-			if (Gamestate.state == Gamestate.COMBAT) {
+			if (Gamestate.state == Gamestate.COMBAT && CombatStates.state != CombatStates.ENEMY_TURN) {
 				
 				Inputs.lastInput = Inputs.SPACE;
 				combat.runCombat(-1, -1, Inputs.SPACE);	

@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import combat.CombatSystem;
+import entities.Mage;
 import entities.Player;
 import entities.Warrior;
 import gamestates.GameMenu;
@@ -29,6 +30,7 @@ public class Game {
 	private GamePanel gamePanel;
 	
 	private Player player;
+	private Player mage;
 	private PlayerInventory playerInventory;
 //	private Elixir elixir;
 	
@@ -56,7 +58,8 @@ public class Game {
 	public void initObjects() {
 		
 		player = new Warrior(screenSettings);
-		gamePanel = new GamePanel(player, screenSettings);
+		mage = new Mage(screenSettings);
+		gamePanel = new GamePanel(player, mage, screenSettings);
 		playerInventory = new PlayerInventory(10);
 //		elixir = new Elixir("Elixir Milagroso", -1);
 		

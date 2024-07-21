@@ -8,7 +8,7 @@ public class Rogue extends Player {
 		
 		super(screenSettings, "/rogue/rogue");
 		
-		setHealth(100);
+		setMaxHealth(100);
 //		setDefense();
 		setSpeed(15);
 		

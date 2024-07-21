@@ -3,6 +3,7 @@ package userInputs;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import combat.CombatStates;
 import combat.CombatSystem;
 import gamestates.Gamestate;
 
@@ -19,7 +20,7 @@ public class Mouse extends MouseAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 
-		if(Gamestate.state == Gamestate.COMBAT) {
+		if(Gamestate.state == Gamestate.COMBAT && CombatStates.state != CombatStates.ENEMY_TURN) {
 			
 			Inputs.lastInput = Inputs.CLICK;
 			combat.runCombat(x, y, Inputs.CLICK);
@@ -29,7 +30,7 @@ public class Mouse extends MouseAdapter {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		
-		if(Gamestate.state == Gamestate.COMBAT) {
+		if(Gamestate.state == Gamestate.COMBAT && CombatStates.state != CombatStates.ENEMY_TURN) {
 			combat.runCombat(x, y, Inputs.NONE);
 		}
 	}
@@ -39,7 +40,7 @@ public class Mouse extends MouseAdapter {
 		x = e.getX();
 		y = e.getY();
 		
-		if(Gamestate.state == Gamestate.COMBAT) {
+		if(Gamestate.state == Gamestate.COMBAT && CombatStates.state != CombatStates.ENEMY_TURN) {
 			
 		}
 	}
@@ -49,7 +50,7 @@ public class Mouse extends MouseAdapter {
 		x = e.getX();
 		y = e.getY();
 		
-		if(Gamestate.state == Gamestate.COMBAT) {
+		if(Gamestate.state == Gamestate.COMBAT && CombatStates.state != CombatStates.ENEMY_TURN) {
 			combat.runCombat(x, y, Inputs.NONE);
 		}
 	}
