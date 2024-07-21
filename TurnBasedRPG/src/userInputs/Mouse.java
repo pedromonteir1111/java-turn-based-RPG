@@ -13,6 +13,7 @@ public class Mouse extends MouseAdapter {
 	private int x, y;
 	
 	public Mouse(CombatSystem combat) {
+		
 		this.combat = combat;
 	}
 	
@@ -24,6 +25,7 @@ public class Mouse extends MouseAdapter {
 			Inputs.lastInput = Inputs.CLICK;
 			combat.runCombat(x, y, Inputs.CLICK);
 		}
+		
 	}
 	
 	@Override

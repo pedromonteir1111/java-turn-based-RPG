@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import combat.CombatSystem;
 import entities.Player;
 import gamestates.Gamestate;
+import inventory.PlayerInventory;
 import map.MapGenerator;
 import userInputs.InputsFromKeyboard;
 import userInputs.Mouse;
@@ -27,15 +28,28 @@ public class GamePanel extends JPanel {
 	
 	private MapGenerator mapGenerator;
 	
-	public GamePanel(Player playerClass, ScreenSettings screenSettings) {
+	
+//	private InventoryUI inventoryUI;
+	private boolean isInventoryOpen;
+	
+
+	public GamePanel(Player playerClass, ScreenSettings screenSettings, PlayerInventory playerInventory) {
 		
 		this.playerClass = playerClass;
+		
 		this.screenSettings = screenSettings; 
 		
+		/* this.inventoryUI = new InventoryUI(playerInventory, playerClass); */
+		this.isInventoryOpen = false;
+			
 		mapGenerator = new MapGenerator(this, screenSettings);
+		
 		combat = new CombatSystem(playerClass, screenSettings, this);
+		
 		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat);
+		
 		mouse = new Mouse(combat);
+		
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
 		this.addKeyListener(inputsFromKeyboard);
@@ -61,14 +75,30 @@ public class GamePanel extends JPanel {
 			default:
 				break;
 		}
+		
 		playerClass.draw(g2D);
 		
 		g2D.dispose();
 	}
-	
-	
-	
-	
+		
+	//		System.out.println("Seu inventário: ");
+	//		
+	//		for (Item item : playerInventory.getItems()) {
+	//			System.out.println(item.getItemName() + " ~~~ Level: " + item.getItemLevel());
+	//		}
+//			boolean isVisible = inventoryUI.isVisible();
+//			
+//			inventoryUI.setVisible(false);
+//			
+//			if (inventoryUI.isVisible()) {
+//				Gamestate.state = Gamestate.INVENTORY;
+//			}
+//			
+//			else {
+//				Gamestate.state = Gamestate.PLAYING;
+//			}
+//				
+//		}
 }
 	
 	
