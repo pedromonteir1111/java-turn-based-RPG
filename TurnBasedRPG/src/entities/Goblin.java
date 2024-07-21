@@ -7,10 +7,11 @@ public class Goblin extends Enemy {
 	public Goblin(ScreenSettings screenSettings) { 
 			super(screenSettings, "/goblin/goblin");
 			
-			setHealth(100);
+			setMaxHealth(100);
 			setAttack(20);
 			setSpeed(15);
 			setWalkRange(3);
+			setAttackRange(2);
 	}
 
 	@Override

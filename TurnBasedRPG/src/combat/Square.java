@@ -86,6 +86,10 @@ public class Square {
 				currentState = state;
 				break;
 				
+			case "Red":
+				currentState = state;
+				break;
+				
 			case "":
 				currentState = state;
 				break;

@@ -8,7 +8,7 @@ public class Archer extends Player {
 		
 		super(screenSettings, "/mage/mage");
 		
-		setHealth(100);
+		setMaxHealth(100);
 //		setDefense();
 		setSpeed(15);
 		

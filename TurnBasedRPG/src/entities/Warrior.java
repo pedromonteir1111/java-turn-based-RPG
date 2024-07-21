@@ -12,10 +12,10 @@ public class Warrior extends Player {
 			
 			this.warriorWeapon = new Sword("Espada de aço", 0);
 			
-			setHealth(100);
+			setMaxHealth(100);
 			setAttack(20);
 			setSpeed(15);
-			setWalkRange(3);
+			setWalkRange(4);
 			
 			setX(50);
 			setY(50);
