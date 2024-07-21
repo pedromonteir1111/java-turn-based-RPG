@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 
 import combat.CombatSystem;
 import entities.Mage;
@@ -19,6 +20,7 @@ import gamestates.Gamestate;
 import inventory.Equipable;
 import inventory.PlayerInventory;
 import inventory.Usable;
+import items.Book;
 import items.Elixir;
 import items.Item;
 import userInputs.Mouse;
@@ -29,6 +31,8 @@ public class Game {
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	
+//	private InventoryUI inventoryUI;
+	
 	private Player player;
 	private Player mage;
 	private PlayerInventory playerInventory;
@@ -38,7 +42,6 @@ public class Game {
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
 	private BufferedImage cursorImage;
 	private Cursor c;
-//	private InputsFromKeyboard inputsFromKeyboard = new InputsFromKeyboard(gamePanel, player);
 	
 	public Game() {
 		
@@ -58,11 +61,15 @@ public class Game {
 	public void initObjects() {
 		
 		player = new Warrior(screenSettings);
+<<<<<<< HEAD
+=======
 		mage = new Mage(screenSettings);
 		gamePanel = new GamePanel(player, mage, screenSettings);
+>>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		playerInventory = new PlayerInventory(10);
+		System.out.println("Inventário criado com itens: " + playerInventory.getItems().size());
+		gamePanel = new GamePanel(player, screenSettings, playerInventory);
 //		elixir = new Elixir("Elixir Milagroso", -1);
-		
 		
 		try {
 			cursorImage = ImageIO.read(getClass().getResourceAsStream("/ui/cursor.png"));
@@ -97,15 +104,11 @@ public class Game {
 			((Equipable) item).equip(player);
 			
 		}
+		
+		else if (item instanceof Book) {
+			((Book) item).checkBookContentAndRead();
+		}
 			
 	}
 	
-	public void printInventory() {
-		
-		System.out.println("Seu inventário: ");
-		
-		for (Item item : playerInventory.getItems()) {
-			System.out.println(item.getItemName() + " ~~~ Level: " + item.getItemLevel());
-		}
-	}
 }

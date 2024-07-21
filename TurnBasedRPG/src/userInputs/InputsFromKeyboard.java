@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 
 import combat.CombatStates;
 import combat.CombatSystem;
+import game.Game;
 import game.GamePanel;
 //import game.MapObjects;
 import gamestates.Gamestate;
@@ -19,13 +20,13 @@ public class InputsFromKeyboard implements KeyListener {
 	private CombatSystem combat;
 	private int spriteIndex = 0;
 	private int spriteCounter = 0;
-	
-	
+		
 	public InputsFromKeyboard(GamePanel gamePanel, Player playerClass, CombatSystem combat) {
 		
 		this.gamePanel = gamePanel;
 		this.playerClass = playerClass;
 		this.combat = combat;
+		
 //		this.mapObjects = mapObjects;
 		
 	}
@@ -59,10 +60,10 @@ public class InputsFromKeyboard implements KeyListener {
 		case KeyEvent.VK_A:
 			
 			if (Gamestate.state != Gamestate.COMBAT) {
-				playerClass.changeDeltaX(-playerClass.getSpeed());
 				
+				playerClass.changeDeltaX(-playerClass.getSpeed());
 				playerClass.setCurrentPlayerPosition(playerClass.getLeftDirection()[spriteIndex + 1]);
-					
+			
 				gamePanel.repaint();
 				gamePanel.revalidate();		
 				
@@ -86,18 +87,16 @@ public class InputsFromKeyboard implements KeyListener {
 		case KeyEvent.VK_D:
 			
 			if (Gamestate.state != Gamestate.COMBAT) {
-				playerClass.changeDeltaX(playerClass.getSpeed());
 				
+				playerClass.changeDeltaX(playerClass.getSpeed());
 				playerClass.setCurrentPlayerPosition(playerClass.getRightDirection()[spriteIndex + 1]);
 				
 				gamePanel.repaint();
-				gamePanel.revalidate();
-					
+				gamePanel.revalidate();		
 				
 			}
 			
 			break;
-			
 			
 		case KeyEvent.VK_O:
 			
@@ -126,7 +125,10 @@ public class InputsFromKeyboard implements KeyListener {
 				gamePanel.repaint();
 				gamePanel.revalidate();
 				
+				break;
 			}
+<<<<<<< HEAD
+=======
 			
 			break;
 			
@@ -156,15 +158,10 @@ public class InputsFromKeyboard implements KeyListener {
 			
 			break;
 		
+>>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		}
-		
-//		if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_D) {
-//
-//            mapObjects.checkCollision(playerClass);
-//        }
-			
 	}
-
+			
 	private void updatePlayerAnimation() {
 		
 		spriteCounter++;
