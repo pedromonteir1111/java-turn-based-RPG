@@ -10,6 +10,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import combat.CombatSystem;
+import combat.HUD;
 import entities.Player;
 import gamestates.Gamestate;
 import inventory.PlayerInventory;
@@ -21,10 +22,9 @@ import userInputs.Mouse;
 public class GamePanel extends JPanel {
 	
 	private Player playerClass;
-	private Player mage;
-	private ScreenSettings screenSettings;
 	private CombatSystem combat;
 	private Mouse mouse;
+	private HUD hud;
 	
 	private InputsFromKeyboard inputsFromKeyboard;
 	
@@ -32,17 +32,17 @@ public class GamePanel extends JPanel {
 	
 	private InventoryUI inventoryUI;
 	
-	public GamePanel(Player playerClass, Player mage, ScreenSettings screenSettings, PlayerInventory playerInventory) {
+
+	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory) {
 		
-		this.playerClass = playerClass;
-		this.mage = mage;
-		this.screenSettings = screenSettings; 
+		this.playerClass = playerClass; 
 		
 		inventoryUI = new InventoryUI(playerInventory, screenSettings.getScreenWidth(), screenSettings.getScreenHeight());
 		
-		mapGenerator = new MapGenerator(this, screenSettings);
-		combat = new CombatSystem(playerClass, mage, screenSettings, this, playerInventory);
-		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat, inventoryUI);
+		hud = new HUD(screenSettings);
+		combat = new CombatSystem(playerClass, mage, rogue, screenSettings, this, playerInventory, hud);
+		mapGenerator = new MapGenerator(this, screenSettings, combat);
+		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat, inventoryUI, screenSettings, mapGenerator);
 		mouse = new Mouse(combat, inventoryUI);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
@@ -73,6 +73,7 @@ public class GamePanel extends JPanel {
 				
 				combat.drawGrid(g2D);
 				combat.drawEntities(g2D);
+				hud.draw(g2D);
 				break;
 				
 			default:

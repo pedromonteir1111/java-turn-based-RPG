@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 
 import javax.imageio.ImageIO;
 
+import combat.CombatSystem;
 import game.GamePanel;
 import game.ScreenSettings;
 
@@ -15,19 +16,34 @@ public class MapGenerator {
 	
 	private GamePanel gamePanel;
 	private ScreenSettings screenSettings;
+	private CombatSystem combat;
 	private Tile[] tiles;
 	private int[][] tileNums;
+	private Room[][] rooms;
+	private int indexX, indexY;
+	private int maxIndexX, maxIndexY;
 	
-	public MapGenerator(GamePanel gamePanel, ScreenSettings screenSettings) {
+	public MapGenerator(GamePanel gamePanel, ScreenSettings screenSettings, CombatSystem combat) {
 		
 		this.gamePanel = gamePanel;
 		this.screenSettings = screenSettings;
+		this.combat = combat;
 		
 		tiles = new Tile[5];
 		tileNums = new int[screenSettings.getMaxCol()][screenSettings.getMaxRow()];
 		
 		loadTileSprites();
-		loadMap("/maps/woodPlankArena.txt");
+		
+		maxIndexX = 1;
+		maxIndexY = 0;
+		
+		rooms = new Room[maxIndexX + 1][maxIndexY + 1];
+		
+		rooms[0][0] = new Room("/maps/woodPlankArena.txt", false, null);
+		rooms[1][0] = new Room("/maps/0test.txt", true, new int[] {0, 0, 0});
+		
+		loadMap(rooms[0][0].getFilePath());
+
 	}
 	
 	public void loadTileSprites() {
@@ -88,5 +104,49 @@ public class MapGenerator {
 		
 //		System.out.println(screenSettings.getScreenWidth()/tileSize);
 //		System.out.println(screenSettings.getScreenWidth()/tileSize);
+	}
+	
+	public void loadNewRoom(int x, int y) {
+		
+		indexX += x;
+		indexY += y;
+		
+		if (indexX <= maxIndexX && indexY <= maxIndexY) {
+			loadMap(rooms[indexX][indexY].getFilePath());
+			
+			if (rooms[indexX][indexY].willTriggerCombat()) {
+				combat.startCombat(rooms[indexX][indexY].getEnemies());
+			}
+		} else {
+			indexX -= x;
+			indexY -= y;
+		}
+		
+		
+		
+	}
+
+	public int getIndexX() {
+		return indexX;
+	}
+
+	public void setIndexX(int indexX) {
+		this.indexX = indexX;
+	}
+
+	public int getIndexY() {
+		return indexY;
+	}
+
+	public void setIndexY(int indexY) {
+		this.indexY = indexY;
+	}
+	
+	public int getMaxIndexX() {
+		return maxIndexX;
+	}
+	
+	public int getMaxIndexY() {
+		return maxIndexY;
 	}
 }

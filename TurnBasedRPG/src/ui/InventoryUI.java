@@ -49,6 +49,7 @@ public class InventoryUI {
         if (!isVisible) {
             return;
         }
+        
         // desenhando e preenchendo o retângulo da UI
         g2D.setColor(new Color(0, 0, 0, 150));
         g2D.fillRect(inventoryX, inventoryY, inventoryWidth, inventoryHeight);
@@ -66,7 +67,9 @@ public class InventoryUI {
         int headerY = inventoryY + headerMetrics.getAscent() + 10;
         g2D.drawString(headerText, headerX, headerY);
         
+
         // lista de itens do playerInventory
+
         List<Item> items = playerInventory.getItems();
         
         g2D.setColor(Color.GREEN);
@@ -79,6 +82,7 @@ public class InventoryUI {
         int itemY = headerY + 50; 
         
         // exibindo um item e seu nível atual
+
         for (Item item : items) {
         	
             String itemDescription = item.getItemName() + " ~~~> Level: " + item.getItemLevel();
@@ -108,6 +112,7 @@ public class InventoryUI {
         
         g2D.drawString(goldText, goldX, goldY);
      
+
     }
     
     public void handleMouseClick(Point point) {

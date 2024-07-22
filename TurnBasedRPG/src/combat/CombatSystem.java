@@ -23,6 +23,7 @@ import userInputs.Inputs;
 public class CombatSystem {
 
 	private ScreenSettings screenSettings;
+	private HUD hud;
 	private Square[][] squares;
 	private Stack<Square> selectedSquares = new Stack<Square>();
 	private Square lastSelectedSquare;
@@ -44,16 +45,18 @@ public class CombatSystem {
 	private boolean combatWin;
 	private boolean combatLoss;
 
+	public CombatSystem(Player player, Player mage, Player rogue, ScreenSettings screenSettings, GamePanel gamePanel, PlayerInventory playerInventory, HUD hud) {
 
-	public CombatSystem(Player player, Player mage, ScreenSettings screenSettings, GamePanel gamePanel, PlayerInventory playerInventory) {
 
 		this.allies = new Player[4];
 		this.allies[0] = player;
 		this.allies[1] = mage;
+		this.allies[2] = rogue;
 		this.tileSize = screenSettings.getTileSize();
 		this.screenSettings = screenSettings;
 		this.gamePanel = gamePanel;
 		this.turns = 0;
+		this.hud = hud;
 		
 		this.playerInventory = playerInventory;
 
@@ -71,11 +74,9 @@ public class CombatSystem {
 
 	public void runCombat(int mouseX, int mouseY, Inputs input) {
 
-		// System.out.println(turns);
 
 		if (turns == 0) {
 			initCombat();
-			// showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), 3);
 		}
 
 		for (Player ally : liveAllies) {
@@ -116,6 +117,8 @@ public class CombatSystem {
 				} else {
 					selectedSquares.removeElement(clickedSquare);
 				}
+				
+				hud.setCurrentHud(2);
 
 				break;
 
@@ -126,6 +129,8 @@ public class CombatSystem {
 					CombatStates.state = CombatStates.ACTION_WALK;
 					runCombat(mouseX, mouseY, input);
 				}
+				
+				hud.setCurrentHud(0);
 
 				break;
 
@@ -134,6 +139,8 @@ public class CombatSystem {
 				removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 				removeSelection();
 				CombatStates.state = CombatStates.SELECT_ATTACK_LOCATION;
+				
+				hud.setCurrentHud(1);
 
 				break;
 
@@ -205,6 +212,8 @@ public class CombatSystem {
 				removeSelection();
 				showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 				CombatStates.state = CombatStates.WAITING_INPUT;
+				
+				hud.setCurrentHud(0);
 				break;
 
 			case SPACE:
@@ -213,8 +222,10 @@ public class CombatSystem {
 
 					CombatStates.state = CombatStates.ACTION_ATTACK;
 					runCombat(mouseX, mouseY, input);
+					
+					hud.setCurrentHud(0);
 				}
-
+				
 				break;
 
 			default:
@@ -246,9 +257,29 @@ public class CombatSystem {
 		gamePanel.revalidate();
 
 	}
+	
+	public void startCombat(int[] enemies) {
+		
+		combatLoss = false;
+		combatWin = false;
+		turns = 0;
+		
+		Gamestate.state = Gamestate.COMBAT;
+		createEntities(enemies);
+		runCombat(-1, -1, Inputs.NONE);
+	}
 
 	private void showRange(int originX, int originY, int range) {
 
+		if (lastRedCoords != null) {
+			for (int i = 0; i < lastRedCoords.length; i += 2) {
+				if (lastRedCoords[i] < 16 && lastRedCoords[i] >= 0 && lastRedCoords[i + 1] < 7
+						&& lastRedCoords[i + 1] >= 0) {
+					squares[lastRedCoords[i]][lastRedCoords[i + 1]].setImage("");
+				}
+			} 
+		}
+		
 		Stack<Square> inRangeSquares = inRange(originX, originY, range);
 		
 		while(!inRangeSquares.empty()) {
@@ -258,6 +289,8 @@ public class CombatSystem {
 			square.setImage("Range");
 			square.setInWalkRange(true);
 		}
+		
+		
 	}
 
 	private void removeRange(int originX, int originY, int range) {
@@ -306,6 +339,20 @@ public class CombatSystem {
 		}	
 		
 		selectedPlayer = liveAllies.get(playerIndex);
+		
+		if(selectedPlayer instanceof Warrior) {
+			
+			hud.setCurrentPlayer(0);
+			
+		} else if(selectedPlayer instanceof Mage) {
+			
+			hud.setCurrentPlayer(1);
+			
+		} else if(selectedPlayer instanceof Rogue) {
+			
+			hud.setCurrentPlayer(2);
+		}
+		
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
 
@@ -410,17 +457,21 @@ public class CombatSystem {
 			
 			System.out.println("[OURO] Você recebeu " + randomGoldDrop + " de ouro dos seus inimigos!");
 			playerInventory.setGold(playerInventory.getGold() + randomGoldDrop); // adicionando o drop de ouro no inventário do player (guerreiro) ao finalizar o combate
+			playerInventory.setGold(playerInventory.getGold() + 50); // adicionando 50 de ouro ao vencer o combate
 			
 		} else if (liveAllies.isEmpty()) {
 			combatWin = false;
 			combatLoss = true;
 			
 			System.out.println("[OURO] Você perdeu toda sua riqueza nesse combate!");
+
 			playerInventory.setGold(0); // se perder o combate, fica zerado de ouro
 		}
 		
 		Gamestate.state = Gamestate.PLAYING;
 		this.turns = 0;
+		hud.setCurrentHud(0);
+		hud.setCurrentPlayer(0);
 		removeSelection();
 		removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 		liveAllies.clear();
@@ -432,6 +483,8 @@ public class CombatSystem {
 	public void createEntities(int[] enemyTypes) {
 		// 0 eh goblin, 1 slime e 2 skeleton
 
+		System.out.println(liveEnemies);
+		
 		for (int i = 0; i < enemyTypes.length; i++) {
 			switch (enemyTypes[i]) {
 			case 0:
@@ -512,13 +565,14 @@ public class CombatSystem {
 
 		if(entity instanceof Player) {
 			
+			//stack percorrido por for each ao inves de while (!selectedSquares.empty()) para poder remover a selecao posteriormente
+			
 			for (Square square : selectedSquares) {
 				
 				if (square.getCurrentEnemy() != null) {
 					Enemy currentEnemy = square.getCurrentEnemy();
 					
 					currentEnemy.setHealth(currentEnemy.getHealth() - damage);
-					System.out.println(currentEnemy.getHealth());
 					
 					if (currentEnemy.getHealth() <= 0) {
 						liveEnemies.remove(currentEnemy);
@@ -533,11 +587,9 @@ public class CombatSystem {
 				
 				if (square.getCurrentPlayer() != null) {
 					
-					System.out.println("entrou");
 					Player currentPlayer = square.getCurrentPlayer();
 					
 					currentPlayer.setHealth(currentPlayer.getHealth() - damage);
-					System.out.println(currentPlayer);
 					
 					if (currentPlayer.getHealth() <= 0) {
 						liveAllies.remove(currentPlayer);
@@ -753,7 +805,6 @@ public class CombatSystem {
 				
 			} else {
 				
-				System.out.println("atacou");
 				attack(enemy);
 				removeSelection();
 				
@@ -765,5 +816,13 @@ public class CombatSystem {
 		
 		CombatStates.state = CombatStates.WAITING_INPUT;
 		turns++;
+	}
+	
+	public boolean getCombatLoss() {
+		return this.combatLoss;
+	}
+	
+	public boolean getCombatWin() {
+		return this.combatWin;
 	}
 }

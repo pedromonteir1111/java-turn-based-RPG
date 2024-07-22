@@ -12,7 +12,7 @@ public class Warrior extends Player {
 			
 			this.warriorWeapon = new Sword("Espada de aço", 0);
 			
-			setMaxHealth(100);
+			setMaxHealth(150);
 			setAttack(20);
 			setSpeed(15);
 			setWalkRange(4);
@@ -26,7 +26,19 @@ public class Warrior extends Player {
 		@Override
 		public int[] attack(int x, int y, int directionX, int directionY) {
 			
-			return new int[] { x + 1 * directionX, y + 1 * directionY, x + 2 * directionX, y + 2 * directionY };
+			int[] attackCoords;
+			
+			if (directionX != 0) {
+				attackCoords =  new int[] { x + 1 * directionX, y + 1 * directionY -1,
+						   					x + 1 * directionX, y + 1 * directionY   ,
+						   					x + 1 * directionX, y + 1 * directionY +1};
+			} else {
+				attackCoords =  new int[] { x + 1 * directionX -1, y + 1 * directionY,
+	   										x + 1 * directionX   , y + 1 * directionY,
+	   										x + 1 * directionX +1, y + 1 * directionY,};
+			}
+			
+			return attackCoords;
 			
 		}
 

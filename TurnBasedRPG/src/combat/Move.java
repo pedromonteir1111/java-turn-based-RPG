@@ -3,6 +3,7 @@ package combat;
 import javax.swing.*;
 
 import entities.Entity;
+import entities.Player;
 import game.GamePanel;
 
 import java.awt.event.ActionEvent;
@@ -55,7 +56,11 @@ public class Move {
         	
 		} else {
 			
-			entity.setCurrentPlayerPosition(entity.getRightDirection()[0]);
+			if (entity instanceof Player) {
+				entity.setCurrentPlayerPosition(entity.getRightDirection()[0]);
+			} else {
+				entity.setCurrentPlayerPosition(entity.getLeftDirection()[0]);
+			}
 			timer.stop();
 		}
     }
