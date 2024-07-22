@@ -8,8 +8,8 @@ public class Mage extends Player {
 			
 			super(screenSettings, "/mage/mage");
 			
-			setMaxHealth(1);
-			setAttack(50);
+			setMaxHealth(50);
+			setAttack(35);
 			setSpeed(15);
 			setWalkRange(3);
 			
@@ -31,7 +31,7 @@ public class Mage extends Player {
 			} else {
 				attackCoords =  new int[] { x + 3 * directionX -1, y + 3 * directionY, x + 4 * directionX -1, y + 4 * directionY, x + 5 * directionX -1, y + 5 * directionY,
 	   										x + 3 * directionX   , y + 3 * directionY, x + 4 * directionX   , y + 4 * directionY, x + 5 * directionX   , y + 5 * directionY,
-	   										x + 3 * directionX +1, y + 3 * directionY, x + 4 * directionX +1, y + 4 * directionY, x + 5 * directionX +1, y + 5 * directionY,};
+	   										x + 3 * directionX +1, y + 3 * directionY, x + 4 * directionX +1, y + 4 * directionY, x + 5 * directionX +1, y + 5 * directionY};
 			}
 			
 			return attackCoords;

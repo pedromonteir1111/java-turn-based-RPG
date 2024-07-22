@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import combat.CombatSystem;
 import entities.Mage;
 import entities.Player;
+import entities.Rogue;
 import entities.Warrior;
 import gamestates.GameMenu;
 import gamestates.Gamestate;
@@ -33,6 +34,7 @@ public class Game {
 	
 	private Player player;
 	private Player mage;
+	private Player rogue;
 	private PlayerInventory playerInventory;
 	private Elixir elixir;
 	
@@ -61,8 +63,9 @@ public class Game {
 		
 		player = new Warrior(screenSettings);
 		mage = new Mage(screenSettings);
+		rogue = new Rogue(screenSettings);
 		playerInventory = new PlayerInventory(10);
-		gamePanel = new GamePanel(player, mage, screenSettings, playerInventory);
+		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory);
 		
 		
 		try {
@@ -85,7 +88,7 @@ public class Game {
 		
 		elixir = new Elixir("Elixir Milagroso", 0);
 		playerInventory.addItem(elixir);
-		
+
 	}
 	
 	public void collectItem(Item item) {
