@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
 import combat.CombatSystem;
 import entities.Mage;
@@ -20,9 +19,10 @@ import gamestates.Gamestate;
 import inventory.Equipable;
 import inventory.PlayerInventory;
 import inventory.Usable;
-import items.Book;
 import items.Elixir;
 import items.Item;
+import items.Sword;
+import items.WarriorArmor;
 import userInputs.Mouse;
 
 public class Game {
@@ -31,12 +31,10 @@ public class Game {
 	private GameWindow gameWindow;
 	private GamePanel gamePanel;
 	
-//	private InventoryUI inventoryUI;
-	
 	private Player player;
 	private Player mage;
 	private PlayerInventory playerInventory;
-//	private Elixir elixir;
+	private Elixir elixir;
 	
 	// \/ para mudar imagem do cursor \/
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -48,6 +46,7 @@ public class Game {
 		screenSettings = new ScreenSettings(5);
 		
 		initObjects();
+		initInventory();
 		
 		gameWindow = new GameWindow(gamePanel, screenSettings);
 		
@@ -61,15 +60,10 @@ public class Game {
 	public void initObjects() {
 		
 		player = new Warrior(screenSettings);
-<<<<<<< HEAD
-=======
 		mage = new Mage(screenSettings);
-		gamePanel = new GamePanel(player, mage, screenSettings);
->>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		playerInventory = new PlayerInventory(10);
-		System.out.println("Inventário criado com itens: " + playerInventory.getItems().size());
-		gamePanel = new GamePanel(player, screenSettings, playerInventory);
-//		elixir = new Elixir("Elixir Milagroso", -1);
+		gamePanel = new GamePanel(player, mage, screenSettings, playerInventory);
+		
 		
 		try {
 			cursorImage = ImageIO.read(getClass().getResourceAsStream("/ui/cursor.png"));
@@ -79,6 +73,19 @@ public class Game {
 		
 		c = toolkit.createCustomCursor(cursorImage , new Point(gamePanel.getX(), gamePanel.getY()), "img");
 			
+	}
+	
+	public void initInventory() {
+		
+		Item initialSword = new Sword("Espada de Prata", 1);
+		playerInventory.addItem(initialSword);
+		
+		Item initialArmor = new WarriorArmor("Armadura de Guerra", 1);
+		playerInventory.addItem(initialArmor);
+		
+		elixir = new Elixir("Elixir Milagroso", 0);
+		playerInventory.addItem(elixir);
+		
 	}
 	
 	public void collectItem(Item item) {
@@ -104,11 +111,6 @@ public class Game {
 			((Equipable) item).equip(player);
 			
 		}
-		
-		else if (item instanceof Book) {
-			((Book) item).checkBookContentAndRead();
-		}
 			
 	}
-	
 }

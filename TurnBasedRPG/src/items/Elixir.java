@@ -2,6 +2,7 @@ package items;
 
 import entities.Player;
 import gamestates.Gamestate;
+import inventory.PlayerInventory;
 import inventory.Usable;
 
 // ao coletar, aumenta 20 de ataque no próximo combate do player. o efeito acaba quando o combate é finalizado
@@ -9,8 +10,10 @@ import inventory.Usable;
 public class Elixir extends Item implements Usable {
 	
 	private Player player;
-
-	public Elixir(String name, int level) { // inicializar level como -1
+	private PlayerInventory playerInventory;
+	private boolean used;
+	
+	public Elixir(String name, int level) { // inicializar level como 0
 		super(name, level);
 		
 	}
@@ -18,12 +21,15 @@ public class Elixir extends Item implements Usable {
 	@Override
 	public boolean isCollected() {
 		
-		if (player.getX() == getItemX() && player.getY() == getItemY()) {
-					
-				setCollected(true);
-				System.out.println("Você coletou " + getItemName());
-				
-				return true;		
+		/*
+		 * if (player.getX() == getItemX() && player.getY() == getItemY()) {
+		 * 
+		 * setCollected(true); System.out.println("Você coletou " + getItemName());
+		 * 
+		 * return true; }
+		 */
+		if ((Elixir) playerInventory.findItem("Elixir Milagroso") != null) {
+			setCollected(true);
 		}
 		
 		return false;	
@@ -34,7 +40,9 @@ public class Elixir extends Item implements Usable {
 	}
 	
 	public void removingElixirEffect(Player player) {
+		
 		player.setAttack(player.getAttack() - 20);
+		used = false;
 	}
 
 	@Override
@@ -47,10 +55,16 @@ public class Elixir extends Item implements Usable {
 			
 			setCollected(false);
 			
+			used = true;
+			
 			return true;
 		}
 		
 		return false;	
+	}
+	
+	public boolean isUsed() {
+		return used;
 	}
 		
 }
