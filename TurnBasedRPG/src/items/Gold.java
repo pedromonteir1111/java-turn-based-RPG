@@ -1,11 +1,13 @@
 package items;
 
 import entities.Player;
+import inventory.PlayerInventory;
 
 public class Gold extends Item {
 // gerar drops aleatórios de ouro dependendo do level do player
 	
 	private Player player;
+	private PlayerInventory playerInventory;
 	
 	public Gold(String name, int level) { // como ouro não tem level, inicializar como -1
 		super(name, level);
@@ -29,21 +31,21 @@ public class Gold extends Item {
 	
 	private void addCollectedGold() {
 		
-		player.setGold(player.getGold() + 50);
+		playerInventory.setGold(playerInventory.getGold() + 50);
 		
 	}
 
 	public void showPlayerGold() {
 		
-		System.out.println(player.getGold());
+		System.out.println(playerInventory.getGold());
 	}
 	
 	
 	public boolean isSufficientGoldForUp(int necessaryGold) {
 		
-		if (player.getGold() >= necessaryGold) {
+		if (playerInventory.getGold() >= necessaryGold) {
 			
-			player.setGold(player.getGold() - necessaryGold);	
+			playerInventory.setGold(playerInventory.getGold() - necessaryGold);	
 			
 			return true;
 		}

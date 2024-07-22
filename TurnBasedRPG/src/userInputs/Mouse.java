@@ -6,16 +6,19 @@ import java.awt.event.MouseEvent;
 import combat.CombatStates;
 import combat.CombatSystem;
 import gamestates.Gamestate;
+import ui.InventoryUI;
 
 public class Mouse extends MouseAdapter {
 
 	private CombatSystem combat;
+	private InventoryUI inventoryUI;
 	
 	private int x, y;
 	
-	public Mouse(CombatSystem combat) {
+	public Mouse(CombatSystem combat, InventoryUI inventoryUI) {
 		
 		this.combat = combat;
+		this.inventoryUI = inventoryUI;
 	}
 	
 	@Override
@@ -27,6 +30,9 @@ public class Mouse extends MouseAdapter {
 			combat.runCombat(x, y, Inputs.CLICK);
 		}
 		
+		else if(inventoryUI.isVisible()) {
+			inventoryUI.handleMouseClick(e.getPoint());
+		}
 	}
 	
 	@Override
@@ -54,6 +60,14 @@ public class Mouse extends MouseAdapter {
 		
 		if(Gamestate.state == Gamestate.COMBAT && CombatStates.state != CombatStates.ENEMY_TURN) {
 			combat.runCombat(x, y, Inputs.NONE);
+		}
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		
+		if(inventoryUI.isVisible()) {
+			inventoryUI.handleMouseClick(e.getPoint());
 		}
 	}
 }

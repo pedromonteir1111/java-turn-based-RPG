@@ -14,6 +14,7 @@ import entities.Player;
 import gamestates.Gamestate;
 import inventory.PlayerInventory;
 import map.MapGenerator;
+import ui.InventoryUI;
 import userInputs.InputsFromKeyboard;
 import userInputs.Mouse;
 
@@ -29,43 +30,30 @@ public class GamePanel extends JPanel {
 	
 	private MapGenerator mapGenerator;
 	
-<<<<<<< HEAD
+	private InventoryUI inventoryUI;
 	
-//	private InventoryUI inventoryUI;
-	private boolean isInventoryOpen;
-	
-
-	public GamePanel(Player playerClass, ScreenSettings screenSettings, PlayerInventory playerInventory) {
-		
-		this.playerClass = playerClass;
-		
-=======
-	public GamePanel(Player playerClass, Player mage, ScreenSettings screenSettings) {
+	public GamePanel(Player playerClass, Player mage, ScreenSettings screenSettings, PlayerInventory playerInventory) {
 		
 		this.playerClass = playerClass;
 		this.mage = mage;
->>>>>>> db778711b96a875628cb3f952ebe1755142726c3
 		this.screenSettings = screenSettings; 
 		
-		/* this.inventoryUI = new InventoryUI(playerInventory, playerClass); */
-		this.isInventoryOpen = false;
-			
+		inventoryUI = new InventoryUI(playerInventory, screenSettings.getScreenWidth(), screenSettings.getScreenHeight());
+		
 		mapGenerator = new MapGenerator(this, screenSettings);
-<<<<<<< HEAD
-		
-		combat = new CombatSystem(playerClass, screenSettings, this);
-		
-=======
-		combat = new CombatSystem(playerClass, mage, screenSettings, this);
->>>>>>> db778711b96a875628cb3f952ebe1755142726c3
-		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat);
-		
-		mouse = new Mouse(combat);
-		
+		combat = new CombatSystem(playerClass, mage, screenSettings, this, playerInventory);
+		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat, inventoryUI);
+		mouse = new Mouse(combat, inventoryUI);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
 		this.addKeyListener(inputsFromKeyboard);
 	
+	}
+	
+	public void toggleInventory() {
+		
+		inventoryUI.toggleInventoryVisibility();
+		repaint();
 	}
 
 	public void paintComponent(Graphics g) {
@@ -75,6 +63,7 @@ public class GamePanel extends JPanel {
 		Graphics2D g2D = (Graphics2D)g; // convertendo os gráficos p/ 2D propriamente
 		
 		mapGenerator.draw(g2D);
+		inventoryUI.draw(g2D);
 		
 		switch (Gamestate.state) {
 			case MENU:
@@ -89,36 +78,16 @@ public class GamePanel extends JPanel {
 			default:
 				break;
 		}
-<<<<<<< HEAD
-		
-		playerClass.draw(g2D);
-		
-=======
 		if (Gamestate.state != Gamestate.COMBAT) {
 			playerClass.draw(g2D);
 		}
->>>>>>> db778711b96a875628cb3f952ebe1755142726c3
+		
 		g2D.dispose();
 	}
-		
-	//		System.out.println("Seu inventário: ");
-	//		
-	//		for (Item item : playerInventory.getItems()) {
-	//			System.out.println(item.getItemName() + " ~~~ Level: " + item.getItemLevel());
-	//		}
-//			boolean isVisible = inventoryUI.isVisible();
-//			
-//			inventoryUI.setVisible(false);
-//			
-//			if (inventoryUI.isVisible()) {
-//				Gamestate.state = Gamestate.INVENTORY;
-//			}
-//			
-//			else {
-//				Gamestate.state = Gamestate.PLAYING;
-//			}
-//				
-//		}
+	
+	
+	
+	
 }
 	
 	
