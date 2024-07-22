@@ -40,9 +40,9 @@ public class GamePanel extends JPanel {
 		inventoryUI = new InventoryUI(playerInventory, screenSettings.getScreenWidth(), screenSettings.getScreenHeight());
 		
 		hud = new HUD(screenSettings);
-		mapGenerator = new MapGenerator(this, screenSettings);
 		combat = new CombatSystem(playerClass, mage, rogue, screenSettings, this, playerInventory, hud);
-		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat, inventoryUI);
+		mapGenerator = new MapGenerator(this, screenSettings, combat);
+		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat, inventoryUI, screenSettings, mapGenerator);
 		mouse = new Mouse(combat, inventoryUI);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);

@@ -262,6 +262,7 @@ public class CombatSystem {
 		
 		combatLoss = false;
 		combatWin = false;
+		turns = 0;
 		
 		Gamestate.state = Gamestate.COMBAT;
 		createEntities(enemies);

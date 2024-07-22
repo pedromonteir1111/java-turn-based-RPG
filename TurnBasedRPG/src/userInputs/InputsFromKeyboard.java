@@ -6,14 +6,18 @@ import java.awt.event.KeyListener;
 import combat.CombatStates;
 import combat.CombatSystem;
 import game.GamePanel;
+import game.ScreenSettings;
 //import game.MapObjects;
 import gamestates.Gamestate;
+import map.MapGenerator;
 import ui.InventoryUI;
 import entities.Player;
 
 
 public class InputsFromKeyboard implements KeyListener {
 	
+	private ScreenSettings screenSettings;
+	private MapGenerator map;
 	private GamePanel gamePanel;
 	private Player playerClass;
 	private InventoryUI inventoryUI;
@@ -22,13 +26,14 @@ public class InputsFromKeyboard implements KeyListener {
 	private int spriteCounter = 0;
 	
 	
-	public InputsFromKeyboard(GamePanel gamePanel, Player playerClass, CombatSystem combat, InventoryUI inventoryUI) {
+	public InputsFromKeyboard(GamePanel gamePanel, Player playerClass, CombatSystem combat, InventoryUI inventoryUI, ScreenSettings screenSettings, MapGenerator mapGenerator) {
 		
 		this.gamePanel = gamePanel;
 		this.playerClass = playerClass;
 		this.combat = combat;
 		this.inventoryUI = inventoryUI;
-		
+		this.screenSettings = screenSettings;
+		this.map = mapGenerator;
 	}
 
 	@Override
@@ -91,10 +96,16 @@ public class InputsFromKeyboard implements KeyListener {
 				
 				playerClass.setCurrentPlayerPosition(playerClass.getRightDirection()[spriteIndex + 1]);
 				
+				if(playerClass.getX() > screenSettings.getScreenWidth() - screenSettings.getTileSize() && map.getIndexX() + 1 <= map.getMaxIndexX()) {
+					
+					playerClass.setX(0);
+					map.loadNewRoom(1, 0);
+					
+				}
+				
 				gamePanel.repaint();
 				gamePanel.revalidate();
 					
-				
 			}
 			
 			break;
