@@ -248,9 +248,6 @@ public class InputsFromKeyboard implements KeyListener {
 			break;
 		
 		}
-<<<<<<< HEAD
-=======
-		
 		
 		if (map.getIndexX() == 0 && map.getIndexY() == 2 
 				&& playerClass.getX() > 3 * tileSize + 8 * scaledPixel && playerClass.getX() < 5 * tileSize 
@@ -264,12 +261,6 @@ public class InputsFromKeyboard implements KeyListener {
 			oldMan.setIsVisible(false);
 		}
 		
-		
-//		if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_D) {
-//
-//            mapObjects.checkCollision(playerClass);
-//        }
->>>>>>> 93f01547e062510049b338db19f4e4eef6841d5a
 			
 	}
 

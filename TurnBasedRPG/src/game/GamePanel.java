@@ -33,20 +33,19 @@ public class GamePanel extends JPanel {
 	private MapGenerator mapGenerator;
 	
 	private InventoryUI inventoryUI;
-<<<<<<< HEAD
 	private boolean inventoryOpen = false;
 	
 	private UsingElixirUI usingElixirUI;
 	
 
 	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory, Elixir elixir) {
-=======
+		
+	}
 	private OldMan oldMan;
 	private PlayerInventory playerInventory;
 	
 
-	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory, OldMan oldMan) {
->>>>>>> 93f01547e062510049b338db19f4e4eef6841d5a
+	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory, OldMan oldMan, Elixir elixir) {
 		
 		this.playerClass = playerClass; 
 		

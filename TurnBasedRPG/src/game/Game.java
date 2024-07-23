@@ -69,12 +69,8 @@ public class Game {
 		rogue = new Rogue(screenSettings);
 		oldMan = new OldMan(screenSettings);
 		playerInventory = new PlayerInventory(10);
-<<<<<<< HEAD
-=======
-		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory, oldMan);
->>>>>>> 93f01547e062510049b338db19f4e4eef6841d5a
+		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory, oldMan, elixir);
 		
-		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory, elixir);
 		
 		try {
 			cursorImage = ImageIO.read(getClass().getResourceAsStream("/ui/cursor.png"));

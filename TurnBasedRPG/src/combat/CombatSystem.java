@@ -16,11 +16,8 @@ import game.GamePanel;
 import game.ScreenSettings;
 import gamestates.Gamestate;
 import inventory.PlayerInventory;
-<<<<<<< HEAD
 import items.Elixir;
 import ui.UsingElixirUI;
-=======
->>>>>>> 93f01547e062510049b338db19f4e4eef6841d5a
 import userInputs.Inputs;
 
 public class CombatSystem {
