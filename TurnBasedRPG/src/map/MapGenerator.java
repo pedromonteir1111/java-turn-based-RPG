@@ -29,18 +29,37 @@ public class MapGenerator {
 		this.screenSettings = screenSettings;
 		this.combat = combat;
 		
-		tiles = new Tile[5];
+		tiles = new Tile[14];
 		tileNums = new int[screenSettings.getMaxCol()][screenSettings.getMaxRow()];
 		
 		loadTileSprites();
 		
-		maxIndexX = 1;
-		maxIndexY = 0;
+		maxIndexX = 3;
+		maxIndexY = 2;
 		
 		rooms = new Room[maxIndexX + 1][maxIndexY + 1];
 		
-		rooms[0][0] = new Room("/maps/woodPlankArena.txt", false, null);
-		rooms[1][0] = new Room("/maps/0test.txt", true, new int[] {0, 0, 0});
+		//criacao de salas
+																		        			 // top, bottom, left, right
+		
+			//y = 0
+		rooms[0][0] = new Room("/maps/woodPlankArena.txt", false, null,                               new boolean[] {false, false, false, true});
+		rooms[1][0] = new Room("/maps/stoneArena_BL_.txt", false, null,                               new boolean[] {false,  true,  true, false});
+		rooms[2][0] = new Room("/maps/stoneArena_B_R.txt", false, null,                               new boolean[] {false,  true, false, true});
+		rooms[3][0] = new Room("/maps/stoneArena__L_.txt", true, new int[] {0, 0, 0, 0, 0, 0},        new boolean[] {false, false,  true, false});
+		
+			//y = 1
+		rooms[1][1] = new Room("/maps/stoneArenaTB_R.txt",  true, new int[] {0, 0},                   new boolean[] { true,  true, false, true});
+		rooms[2][1] = new Room("/maps/stoneArena.txt", false, null,                                   new boolean[] { true,  true,  true, true});
+		rooms[3][1] = new Room("/maps/stoneArena_BL_.txt", false, null,                               new boolean[] {false,  true,  true, false});
+		
+			//y = 2
+		rooms[0][2] = new Room("/maps/woodPlankArena.txt", false, null,                               new boolean[] {false, false, false, true});
+		rooms[1][2] = new Room("/maps/stoneArenaT_L_.txt", false, null,                               new boolean[] { true, false,  true, false});
+		rooms[2][2] = new Room("/maps/stoneArenaT__R.txt", false, null,                               new boolean[] { true, false, false, true});
+		rooms[3][2] = new Room("/maps/stoneArenaT_L_.txt",  true, new int[] {0, 0, 0}  ,              new boolean[] { true, false,  true, false});
+		
+		//new int[] {0, 0, 0}
 		
 		loadMap(rooms[0][0].getFilePath());
 
@@ -52,7 +71,20 @@ public class MapGenerator {
 			this.tiles[0] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/woodPlanks1.png")), false);
 			this.tiles[1] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/woodPlanks2.png")), false);
 			this.tiles[2] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/woodPlanks3.png")), false);
-			this.tiles[3] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/woodfloor.png")), false);
+			this.tiles[3] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/void.png")), false);
+			
+			this.tiles[4] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/stoneWall.png")), false);
+			this.tiles[5] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/stoneFloor.png")), false);
+			this.tiles[6] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/stoneBottom.png")), false);
+			this.tiles[7] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/stoneTop.png")), false);
+			this.tiles[8] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/stoneRight.png")), false);
+			this.tiles[9] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/stoneLeft.png")), false);
+			
+			this.tiles[10] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/blobDownLeft.png")), false);
+			this.tiles[11] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/blobDownRight.png")), false);
+			this.tiles[12] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/blobUpLeft.png")), false);
+			this.tiles[13] = new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/blobUpRight.png")), false);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -124,6 +156,10 @@ public class MapGenerator {
 		
 		
 		
+	}
+	
+	public Room getCurrentRoom() {
+		return this.rooms[indexX][indexY];
 	}
 
 	public int getIndexX() {

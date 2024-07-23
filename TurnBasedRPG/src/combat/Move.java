@@ -1,13 +1,13 @@
 package combat;
 
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
 
 import entities.Entity;
 import entities.Player;
 import game.GamePanel;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Move {
 	

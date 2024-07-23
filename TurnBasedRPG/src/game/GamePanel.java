@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import combat.CombatSystem;
 import combat.HUD;
+import entities.OldMan;
 import entities.Player;
 import gamestates.Gamestate;
 import inventory.PlayerInventory;
@@ -31,9 +32,11 @@ public class GamePanel extends JPanel {
 	private MapGenerator mapGenerator;
 	
 	private InventoryUI inventoryUI;
+	private OldMan oldMan;
+	private PlayerInventory playerInventory;
 	
 
-	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory) {
+	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory, OldMan oldMan) {
 		
 		this.playerClass = playerClass; 
 		
@@ -42,7 +45,9 @@ public class GamePanel extends JPanel {
 		hud = new HUD(screenSettings);
 		combat = new CombatSystem(playerClass, mage, rogue, screenSettings, this, playerInventory, hud);
 		mapGenerator = new MapGenerator(this, screenSettings, combat);
-		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat, inventoryUI, screenSettings, mapGenerator);
+		this.oldMan = oldMan;
+		this.playerInventory = playerInventory;
+		inputsFromKeyboard = new InputsFromKeyboard(this, playerClass, combat, inventoryUI, screenSettings, mapGenerator, oldMan);
 		mouse = new Mouse(combat, inventoryUI);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
@@ -63,7 +68,6 @@ public class GamePanel extends JPanel {
 		Graphics2D g2D = (Graphics2D)g; // convertendo os gráficos p/ 2D propriamente
 		
 		mapGenerator.draw(g2D);
-		inventoryUI.draw(g2D);
 		
 		switch (Gamestate.state) {
 			case MENU:
@@ -79,9 +83,16 @@ public class GamePanel extends JPanel {
 			default:
 				break;
 		}
+		
+		if(mapGenerator.getIndexX() == 0 && mapGenerator.getIndexY() == 2) {
+			oldMan.draw(g2D, playerInventory.getGold());
+		}
+		
 		if (Gamestate.state != Gamestate.COMBAT) {
 			playerClass.draw(g2D);
 		}
+		
+		inventoryUI.draw(g2D);
 		
 		g2D.dispose();
 	}
