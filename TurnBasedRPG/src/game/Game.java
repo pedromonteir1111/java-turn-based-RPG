@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import combat.CombatSystem;
 import entities.Mage;
+import entities.OldMan;
 import entities.Player;
 import entities.Rogue;
 import entities.Warrior;
@@ -38,6 +39,7 @@ public class Game {
 	private Player rogue;
 	private PlayerInventory playerInventory;
 	private Elixir elixir;
+	private OldMan oldMan;
 	
 	// \/ para mudar imagem do cursor \/
 	private Toolkit toolkit = Toolkit.getDefaultToolkit();
@@ -65,7 +67,12 @@ public class Game {
 		player = new Warrior(screenSettings);
 		mage = new Mage(screenSettings);
 		rogue = new Rogue(screenSettings);
+		oldMan = new OldMan(screenSettings);
 		playerInventory = new PlayerInventory(10);
+<<<<<<< HEAD
+=======
+		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory, oldMan);
+>>>>>>> 93f01547e062510049b338db19f4e4eef6841d5a
 		
 		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory, elixir);
 		

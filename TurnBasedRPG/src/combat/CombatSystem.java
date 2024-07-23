@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
-import entities.Archer;
 import entities.Enemy;
 import entities.Entity;
 import entities.Goblin;
@@ -17,8 +16,11 @@ import game.GamePanel;
 import game.ScreenSettings;
 import gamestates.Gamestate;
 import inventory.PlayerInventory;
+<<<<<<< HEAD
 import items.Elixir;
 import ui.UsingElixirUI;
+=======
+>>>>>>> 93f01547e062510049b338db19f4e4eef6841d5a
 import userInputs.Inputs;
 
 public class CombatSystem {
@@ -681,9 +683,6 @@ public class CombatSystem {
 
 		} else if (selectedPlayer instanceof Mage) {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Mage");
-
-		} else if (selectedPlayer instanceof Archer) {
-			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Archer");
 
 		} else if (selectedPlayer instanceof Rogue) {
 			squares[selectedPlayer.getSquareX()][selectedPlayer.getSquareY()].setImage("Rogue");
