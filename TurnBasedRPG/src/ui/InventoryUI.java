@@ -115,6 +115,7 @@ public class InventoryUI {
 
     }
     
+    // essa parte está instável, mas, no geral, remover um item com dois cliques no seu nome funciona
     public void handleMouseClick(Point point) {
     	
         if (!isVisible) {

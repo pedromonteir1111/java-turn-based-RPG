@@ -3,6 +3,7 @@ package inventory;
 import java.util.ArrayList;
 import java.util.List;
 
+import gameExceptions.InventoryFullException;
 import items.Item;
 
 public class PlayerInventory implements Inventory<Item> {
@@ -21,7 +22,7 @@ public class PlayerInventory implements Inventory<Item> {
 	}
 
 	@Override
-	public void addItem(Item item) {
+	public void addItem(Item item) throws InventoryFullException {
 		
 		if (this.items.size() < getInventoryCapacity()) {
 			
@@ -32,7 +33,7 @@ public class PlayerInventory implements Inventory<Item> {
 		}
 		
 		else {
-			// throw new Exception("Seu inventário está cheio!");
+			throw new InventoryFullException("Seu inventário está cheio!");
 		}
 		
 	}
@@ -51,10 +52,10 @@ public class PlayerInventory implements Inventory<Item> {
 			
 			if (item.getItemName().equals(name)) {
 				return item;
-			}
+			}		
 		}
 		
-		return null;	
+		return null;
 	}
 	
 	@Override

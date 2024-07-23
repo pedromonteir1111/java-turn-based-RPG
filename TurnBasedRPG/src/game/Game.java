@@ -15,6 +15,7 @@ import entities.Mage;
 import entities.Player;
 import entities.Rogue;
 import entities.Warrior;
+import gameExceptions.InventoryFullException;
 import gamestates.GameMenu;
 import gamestates.Gamestate;
 import inventory.Equipable;
@@ -65,8 +66,8 @@ public class Game {
 		mage = new Mage(screenSettings);
 		rogue = new Rogue(screenSettings);
 		playerInventory = new PlayerInventory(10);
-		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory);
 		
+		gamePanel = new GamePanel(player, mage, rogue, screenSettings, playerInventory, elixir);
 		
 		try {
 			cursorImage = ImageIO.read(getClass().getResourceAsStream("/ui/cursor.png"));
@@ -81,20 +82,44 @@ public class Game {
 	public void initInventory() {
 		
 		Item initialSword = new Sword("Espada de Prata", 1);
-		playerInventory.addItem(initialSword);
+		
+		try {
+			playerInventory.addItem(initialSword);
+			
+		} catch (InventoryFullException e) {
+			e.printStackTrace();
+		}
 		
 		Item initialArmor = new WarriorArmor("Armadura de Guerra", 1);
-		playerInventory.addItem(initialArmor);
 		
-		elixir = new Elixir("Elixir Milagroso", 0);
-		playerInventory.addItem(elixir);
+		try {
+			playerInventory.addItem(initialArmor);
+			
+		} catch (InventoryFullException e) {
+			e.printStackTrace();
+		}
+		
+		elixir = new Elixir("Elixir Milagroso", 0, playerInventory);
+		
+		try {
+			playerInventory.addItem(elixir);
+			
+		} catch (InventoryFullException e) {
+			e.printStackTrace();
+		}
 
 	}
 	
 	public void collectItem(Item item) {
 		
 		if (!item.isCollected()) {
-			playerInventory.addItem(item);
+			
+			try {
+				playerInventory.addItem(item);
+				
+			} catch (InventoryFullException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

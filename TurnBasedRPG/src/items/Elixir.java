@@ -5,17 +5,22 @@ import gamestates.Gamestate;
 import inventory.PlayerInventory;
 import inventory.Usable;
 
-// ao coletar, aumenta 20 de ataque no próximo combate do player. o efeito acaba quando o combate é finalizado
+// quando coletado, aumenta entre 15-30 de ataque no próximo combate do player. o efeito acaba quando o combate é finalizado
 
 public class Elixir extends Item implements Usable {
 	
 	private Player player;
 	private PlayerInventory playerInventory;
-	private boolean used;
+	private boolean used = false;
 	
-	public Elixir(String name, int level) { // inicializar level como 0
-		super(name, level);
+	private int elixirAttackBoost;
+
+	public Elixir(String name, int level, PlayerInventory playerInventory) { // inicializar level como 0
 		
+		super(name, level);
+		this.playerInventory = playerInventory;	
+		
+		setElixirAttackBoost(elixirAttackBoost);
 	}
 	
 	@Override
@@ -28,30 +33,33 @@ public class Elixir extends Item implements Usable {
 		 * 
 		 * return true; }
 		 */
-		if ((Elixir) playerInventory.findItem("Elixir Milagroso") != null) {
-			setCollected(true);
-		}
+		
+			if (playerInventory.findItem("Elixir Milagroso") != null) {
+				
+				return true;
+			}
 		
 		return false;	
 	}
 	
 	public void usingElixir(Player player) {
-		player.setAttack(player.getAttack() + 20);			
+		
+		player.setAttack(player.getAttack() + getElixirAttackBoost());			
 	}
 	
 	public void removingElixirEffect(Player player) {
 		
-		player.setAttack(player.getAttack() - 20);
+		player.setAttack(player.getAttack() - getElixirAttackBoost());
 		used = false;
 	}
 
 	@Override
 	public boolean use(Player player) {
 		
-		if (isCollected()) {
+		if (isCollected() && !used) {
 			
 			usingElixir(player);
-			System.out.println("[ELIXIR] Você ganhou 20 de poder de ataque nesse combate!");
+			System.out.println("[ELIXIR] Você ganhou " + elixirAttackBoost + " de poder de ataque nesse combate!");
 			
 			setCollected(false);
 			
@@ -65,6 +73,14 @@ public class Elixir extends Item implements Usable {
 	
 	public boolean isUsed() {
 		return used;
+	}
+	
+	public int getElixirAttackBoost() {
+		return elixirAttackBoost;
+	}
+
+	public void setElixirAttackBoost(int elixirAttackBoost) {
+		this.elixirAttackBoost = (int)(Math.random() * 15 + 15); // gerador de boost entre 15-30 de ataque quando utilizado o elixir
 	}
 		
 }
