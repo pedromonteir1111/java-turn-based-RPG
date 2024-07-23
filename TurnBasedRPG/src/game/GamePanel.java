@@ -15,8 +15,10 @@ import entities.OldMan;
 import entities.Player;
 import gamestates.Gamestate;
 import inventory.PlayerInventory;
+import items.Elixir;
 import map.MapGenerator;
 import ui.InventoryUI;
+import ui.UsingElixirUI;
 import userInputs.InputsFromKeyboard;
 import userInputs.Mouse;
 
@@ -26,24 +28,33 @@ public class GamePanel extends JPanel {
 	private CombatSystem combat;
 	private Mouse mouse;
 	private HUD hud;
-	
 	private InputsFromKeyboard inputsFromKeyboard;
 	
 	private MapGenerator mapGenerator;
 	
 	private InventoryUI inventoryUI;
+	private boolean inventoryOpen = false;
+	
+	private UsingElixirUI usingElixirUI;
+	
+
+	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory, Elixir elixir) {
+		
+	}
 	private OldMan oldMan;
 	private PlayerInventory playerInventory;
 	
 
-	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory, OldMan oldMan) {
+	public GamePanel(Player playerClass, Player mage, Player rogue, ScreenSettings screenSettings, PlayerInventory playerInventory, OldMan oldMan, Elixir elixir) {
 		
 		this.playerClass = playerClass; 
 		
 		inventoryUI = new InventoryUI(playerInventory, screenSettings.getScreenWidth(), screenSettings.getScreenHeight());
 		
+		usingElixirUI = new UsingElixirUI(screenSettings.getScreenWidth(), screenSettings.getScreenHeight(), elixir);
+		
 		hud = new HUD(screenSettings);
-		combat = new CombatSystem(playerClass, mage, rogue, screenSettings, this, playerInventory, hud);
+		combat = new CombatSystem(playerClass, mage, rogue, screenSettings, this, playerInventory, hud, usingElixirUI);
 		mapGenerator = new MapGenerator(this, screenSettings, combat);
 		this.oldMan = oldMan;
 		this.playerInventory = playerInventory;
@@ -58,7 +69,12 @@ public class GamePanel extends JPanel {
 	public void toggleInventory() {
 		
 		inventoryUI.toggleInventoryVisibility();
+		inventoryOpen = inventoryUI.isVisible();
 		repaint();
+	}
+
+	public boolean isInventoryOpen() {
+		return inventoryOpen;
 	}
 
 	public void paintComponent(Graphics g) {
@@ -69,6 +85,10 @@ public class GamePanel extends JPanel {
 		
 		mapGenerator.draw(g2D);
 		
+		usingElixirUI.update();
+		usingElixirUI.draw(g2D);
+		
+		
 		switch (Gamestate.state) {
 			case MENU:
 				break;
@@ -77,7 +97,9 @@ public class GamePanel extends JPanel {
 				
 				combat.drawGrid(g2D);
 				combat.drawEntities(g2D);
+				
 				hud.draw(g2D);
+				
 				break;
 				
 			default:

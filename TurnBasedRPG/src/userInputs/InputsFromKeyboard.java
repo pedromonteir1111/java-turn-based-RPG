@@ -59,6 +59,16 @@ public class InputsFromKeyboard implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		
 		updatePlayerAnimation();
+		
+		if (e.getKeyCode() == KeyEvent.VK_I) {
+			
+			gamePanel.toggleInventory();
+			return;
+		}
+		
+		if (gamePanel.isInventoryOpen()) {
+			return;
+		}
 			
 		switch(e.getKeyCode()) {	
 		
@@ -236,15 +246,8 @@ public class InputsFromKeyboard implements KeyListener {
 			}
 			
 			break;
-			
-		case KeyEvent.VK_I:
-				
-			gamePanel.toggleInventory();	
-			
-			break;
 		
 		}
-		
 		
 		if (map.getIndexX() == 0 && map.getIndexY() == 2 
 				&& playerClass.getX() > 3 * tileSize + 8 * scaledPixel && playerClass.getX() < 5 * tileSize 
@@ -258,11 +261,6 @@ public class InputsFromKeyboard implements KeyListener {
 			oldMan.setIsVisible(false);
 		}
 		
-		
-//		if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_D) {
-//
-//            mapObjects.checkCollision(playerClass);
-//        }
 			
 	}
 
@@ -280,6 +278,10 @@ public class InputsFromKeyboard implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		
+		if (gamePanel.isInventoryOpen()) {
+			return;
+		}
 		
 		if (Gamestate.state != Gamestate.COMBAT) {
 		  switch(e.getKeyCode()) {

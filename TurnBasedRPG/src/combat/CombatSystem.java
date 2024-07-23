@@ -16,12 +16,15 @@ import game.GamePanel;
 import game.ScreenSettings;
 import gamestates.Gamestate;
 import inventory.PlayerInventory;
+import items.Elixir;
+import ui.UsingElixirUI;
 import userInputs.Inputs;
 
 public class CombatSystem {
 
 	private ScreenSettings screenSettings;
 	private HUD hud;
+	private UsingElixirUI usingElixirUI;
 	private Square[][] squares;
 	private Stack<Square> selectedSquares = new Stack<Square>();
 	private Square lastSelectedSquare;
@@ -43,7 +46,7 @@ public class CombatSystem {
 	private boolean combatWin;
 	private boolean combatLoss;
 
-	public CombatSystem(Player player, Player mage, Player rogue, ScreenSettings screenSettings, GamePanel gamePanel, PlayerInventory playerInventory, HUD hud) {
+	public CombatSystem(Player player, Player mage, Player rogue, ScreenSettings screenSettings, GamePanel gamePanel, PlayerInventory playerInventory, HUD hud, UsingElixirUI usingElixirUI) {
 
 
 		this.allies = new Player[4];
@@ -57,6 +60,7 @@ public class CombatSystem {
 		this.hud = hud;
 		
 		this.playerInventory = playerInventory;
+		this.usingElixirUI = usingElixirUI;
 
 		this.squares = new Square[16][7];
 
@@ -264,7 +268,16 @@ public class CombatSystem {
 		
 		Gamestate.state = Gamestate.COMBAT;
 		createEntities(enemies);
-		runCombat(-1, -1, Inputs.NONE);
+		runCombat(-1, -1, Inputs.NONE);	
+			
+		Elixir elixir = (Elixir) playerInventory.findItem("Elixir Milagroso");
+		
+		if (elixir != null && elixir.isCollected()) {
+			
+			elixir.use(selectedPlayer);
+			usingElixirUI.showMessage(); // deverá aparecer por 2 segundos		
+		}
+		
 	}
 
 	private void showRange(int originX, int originY, int range) {
@@ -354,32 +367,25 @@ public class CombatSystem {
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 	}
 
-//	private void removeElixirIfUsed() { // removendo o efeito do elixir (se coletado) após o combate
-//
-//		Elixir elixir = (Elixir) playerInventory.findItem("Elixir Milagroso");
-//		
-//		if (elixir != null && elixir.isUsed()) {
-//			
-//			elixir.removingElixirEffect(selectedPlayer);
-//			
-//			playerInventory.removeItem(elixir);
-//	
-//			System.out.println("[ELIXIR] O efeito do seu elixir acabou!");
-//		}
-//	}
+	private void removeElixirIfUsed() { // removendo o efeito do elixir (se coletado) após o combate
+		
+			Elixir elixir = (Elixir) playerInventory.findItem("Elixir Milagroso");
+			
+			if (elixir != null && elixir.isUsed()) {
+				
+				elixir.removingElixirEffect(selectedPlayer);
+				
+				playerInventory.removeItem(elixir);
+		
+				System.out.println("[ELIXIR] O efeito do seu elixir acabou!");
+			}
+	}
 
 	private void initCombat() {
 
+
 		combatLoss = false;
 		combatWin = false;
-		
-//		Elixir elixir = (Elixir) playerInventory.findItem("Elixir Milagroso");
-//		
-//		if (elixir != null && elixir.isCollected()) {
-//			
-//			elixir.use(selectedPlayer);
-//			System.out.println("[ELIXIR] O elixir foi usado. Aproveite o boost!");
-//		}
 		
 		for (Player ally : allies) {
 			if (ally != null) {
@@ -435,11 +441,14 @@ public class CombatSystem {
 		playerIndex = 0;
 
 		showRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
+		
 	}
 
 	public void leaveCombat() {
 		
-		int randomGoldDrop = (int)(Math.random() * 30 + 20); // drop aleatório de ouro que varia entre 20 e 50
+		removeElixirIfUsed();
+		
+		int randomGoldDrop = (int)(Math.random() * 30 + 20); // drop aleatório de ouro pós-combate que varia entre 20 e 50
 		
 		for (int row = 0; row < 7; row++) {
 			for (int col = 0; col < 16; col++) {
@@ -450,20 +459,21 @@ public class CombatSystem {
 		}
 
 		if(liveEnemies.isEmpty()) {
+			
 			combatWin = true;
 			combatLoss = false;
 			
 			System.out.println("[OURO] Você recebeu " + randomGoldDrop + " de ouro dos seus inimigos!");
 			playerInventory.setGold(playerInventory.getGold() + randomGoldDrop); // adicionando o drop de ouro no inventário do player (guerreiro) ao finalizar o combate
-			playerInventory.setGold(playerInventory.getGold() + 50); // adicionando 50 de ouro ao vencer o combate
 			
 		} else if (liveAllies.isEmpty()) {
+			
 			combatWin = false;
 			combatLoss = true;
 			
 			System.out.println("[OURO] Você perdeu toda sua riqueza nesse combate!");
-
 			playerInventory.setGold(0); // se perder o combate, fica zerado de ouro
+
 		}
 		
 		Gamestate.state = Gamestate.PLAYING;
@@ -474,8 +484,6 @@ public class CombatSystem {
 		removeRange(selectedPlayer.getSquareX(), selectedPlayer.getSquareY(), selectedPlayer.getWalkRange());
 		liveAllies.clear();
 		liveEnemies.clear();
-		
-//		removeElixirIfUsed();
 	}
 
 	public void createEntities(int[] enemyTypes) {
@@ -503,7 +511,7 @@ public class CombatSystem {
 		}
 		
 	}
-
+	
 	public void drawEntities(Graphics2D g2D) {
 		for (Enemy enemy : liveEnemies) {
 			enemy.draw(g2D);
