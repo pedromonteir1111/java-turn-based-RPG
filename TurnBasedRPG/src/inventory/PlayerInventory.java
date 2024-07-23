@@ -17,7 +17,7 @@ public class PlayerInventory implements Inventory<Item> {
 		this.items = new ArrayList<>();
 		this.inventoryCapacity = inventoryCapacity;
 		
-		setGold(50);
+		setGold(0);
 	}
 
 	@Override

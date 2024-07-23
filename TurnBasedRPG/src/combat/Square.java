@@ -2,7 +2,6 @@ package combat;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 

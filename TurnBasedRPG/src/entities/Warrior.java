@@ -17,8 +17,8 @@ public class Warrior extends Player {
 			setSpeed(15);
 			setWalkRange(4);
 			
-			setX(50);
-			setY(50);
+			setX(screenSettings.getScreenWidth()/2 - screenSettings.getTileSize()/2);
+			setY(screenSettings.getScreenHeight()/2 - screenSettings.getTileSize()/2 - screenSettings.getTileSize());
 			
 		
 	}
